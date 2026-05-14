@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>13 岁女孩学习与生活多维度评估问卷</title>
+<style>
+  :root {
+    --primary: #5b8def;
+    --primary-dark: #3a6fd6;
+    --accent: #ffb74d;
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --text: #2c3e50;
+    --muted: #6b7a8f;
+    --border: #e3e8f0;
+    --success: #4caf50;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px 12px 80px;
+    line-height: 1.65;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+  header {
+    background: linear-gradient(135deg, #5b8def 0%, #7b6dee 100%);
+    color: #fff;
+    padding: 32px 28px;
+    border-radius: 14px;
+    margin-bottom: 24px;
+    box-shadow: 0 6px 20px rgba(91, 141, 239, 0.25);
+  }
+  header h1 { margin: 0 0 8px; font-size: 24px; }
+  header p { margin: 6px 0; opacity: 0.95; font-size: 14px; }
+  .intro-note {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-top: 14px;
+    font-size: 13.5px;
+  }
+  .section {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border-left: 4px solid var(--primary);
+  }
+  .section h2 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section .badge {
+    background: var(--primary);
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: normal;
+  }
+  .section .why {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 18px;
+    font-style: italic;
+    background: #f8faff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+  }
+  .question {
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .question:last-child { border-bottom: none; }
+  .q-text {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 14.5px;
+  }
+  .q-hint {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    margin-top: -4px;
+  }
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .options label {
+    background: #f1f5fb;
+    padding: 7px 14px;
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 13.5px;
+    border: 1.5px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .options label:hover { background: #e6edf9; }
+  .options input[type="radio"],
+  .options input[type="checkbox"] {
+    display: none;
+  }
+  .options input[type="radio"]:checked + span,
+  .options input[type="checkbox"]:checked + span {
+    color: var(--primary-dark);
+    font-weight: 600;
+  }
+  .options label:has(input:checked) {
+    background: #e3edff;
+    border-color: var(--primary);
+  }
+  textarea, input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    background: #fafbfd;
+  }
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #fff;
+  }
+  textarea { min-height: 70px; }
+  .scale-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .scale-row .scale-label {
+    font-size: 12px;
+    color: var(--muted);
+    min-width: 40px;
+  }
+  .toolbar {
+    position: sticky;
+    bottom: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 12px;
+    border-radius: 12px;
+    box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 24px;
+  }
+  button {
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.1s, box-shadow 0.15s;
+  }
+  button:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-secondary { background: #fff; color: var(--primary-dark); border: 1.5px solid var(--primary); }
+  .btn-success { background: var(--success); color: #fff; }
+  #output-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #output-modal.show { display: flex; }
+  .modal-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .modal-box h3 { margin-top: 0; color: var(--primary-dark); }
+  #output-text {
+    width: 100%;
+    min-height: 360px;
+    font-family: "SF Mono", Consolas, monospace;
+    font-size: 12.5px;
+    background: #f8faff;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 14px;
+  }
+  .priority-tag {
+    display: inline-block;
+    background: #fff3e0;
+    color: #e65100;
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 8px;
+    margin-left: 6px;
+    font-weight: 600;
+  }
+  @media (max-width: 600px) {
+    body { padding: 12px 6px 80px; }
+    header { padding: 22px 18px; }
+    header h1 { font-size: 20px; }
+    .section { padding: 18px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>🌱 孩子学习与生活多维度评估问卷</h1>
+  <p><strong>对象</strong>：13 岁女孩 &nbsp;|&nbsp; <strong>填写人</strong>：家长（建议家长共同回忆讨论后填写）</p>
+  <p><strong>用时</strong>：约 25–35 分钟 &nbsp;|&nbsp; <strong>用途</strong>：从生活、生理、心理、家庭、学习多维度收集信息，定位"易错"行为的根源</p>
+  <div class="intro-note">
+    💡 <strong>填写建议</strong>：请根据孩子<strong>最近 1–3 个月的常态表现</strong>填写，不必追求"理想答案"。越真实越能帮我做出准确分析。<br/>
+    📝 部分问题没有标准答案，<strong>"不确定"或"没观察过"也是有价值的信息</strong>，可在备注中说明。<br/>
+    🔒 所有内容仅在您的浏览器本地，填完点击底部"<strong>导出答案</strong>"即可复制粘贴给我。
+  </div>
+</header>
+
+<!-- ============ 第 1 部分：基本信息 ============ -->
+<section class="section">
+  <h2>① 基本背景 <span class="badge">基础</span></h2>
+  <p class="why">建立孩子的整体画像，了解发育阶段与外部环境。</p>
+
+  <div class="question">
+    <div class="q-text">1.1 孩子目前年级 / 在校情况</div>
+    <input type="text" name="q1_1" placeholder="例如：初一上学期，公立学校，班级 45 人" />
+  </div>
+
+  <div class="question">
+    <div class="q-text">1.2 孩子的整体学业水平在班级中大约处于</div>
+    <div class="options">
+      <label><input type="radio" name="q1_2" value="前列" /><span>前 1/4</span></label>
+      <label><input type="radio" name="q1_2" value="中上" /><span>中上</span></label>
+      <label><input type="radio" name="q1_2" value="中等" /><span>中等</span></label>
+      <label><input type="radio" name="q1_2" value="中下" /><span>中下</span></label>
+      <label><input type="radio" name="q1_2" value="后列" /><span>靠后</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">1.3 数学和语文之外，其他科目（英语/物理/史地等）是否也存在类似"会但做错"的情况？</div>
+    <textarea name="q1_3" placeholder="举例说明，例如：英语听力会漏选项；地理填图常填反方向……"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">1.4 这种"易错"情况大约从什么时候开始变得明显？</div>
+    <div class="options">
+      <label><input type="radio" name="q1_4" value="一直如此" /><span>从小一直如此</span></label>
+      <label><input type="radio" name="q1_4" value="小学高年级" /><span>小学高年级开始</span></label>
+      <label><input type="radio" name="q1_4" value="升初中后" /><span>升初中后明显</span></label>
+      <label><input type="radio" name="q1_4" value="近半年" /><span>近半年才明显</span></label>
+      <label><input type="radio" name="q1_4" value="不确定" /><span>不太确定</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第 2 部分：睡眠 ============ -->
+<section class="section">
+  <h2>② 睡眠状况 <span class="badge">脑科学</span><span class="priority-tag">高优先级</span></h2>
+  <p class="why">青春期大脑在睡眠中完成记忆巩固和前额叶修剪，睡眠不足直接表现为：注意力涣散、工作记忆下降、计算错误、阅读理解迟钝。13 岁女孩每日推荐 9–10 小时。</p>
+
+  <div class="question">
+    <div class="q-text">2.1 平均上学日入睡时间 / 起床时间</div>
+    <input type="text" name="q2_1" placeholder="例如：22:30 入睡，6:30 起床" />
+  </div>
+
+  <div class="question">
+    <div class="q-text">2.2 周末睡眠时间是否明显补偿（晚睡晚起）？</div>
+    <div class="options">
+      <label><input type="radio" name="q2_2" value="差不多" /><span>和平时差不多</span></label>
+      <label><input type="radio" name="q2_2" value="多1小时内" /><span>多睡 1 小时内</span></label>
+      <label><input type="radio" name="q2_2" value="多2-3小时" /><span>多睡 2–3 小时</span></label>
+      <label><input type="radio" name="q2_2" value="多3小时以上" /><span>多睡 3 小时以上</span></label>
+    </div>
+    <div class="q-hint">补觉超过 2 小时通常意味着平时存在"睡眠债"。</div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">2.3 入睡情况</div>
+    <div class="options">
+      <label><input type="radio" name="q2_3" value="很快" /><span>10 分钟内入睡</span></label>
+      <label><input type="radio" name="q2_3" value="一般" /><span>10–30 分钟</span></label>
+      <label><input type="radio" name="q2_3" value="较慢" /><span>30–60 分钟</span></label>
+      <label><input type="radio" name="q2_3" value="很难" /><span>60 分钟以上 / 经常失眠</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">2.4 早晨叫醒她的难度</div>
+    <div class="options">
+      <label><input type="radio" name="q2_4" value="自然醒" /><span>能自然醒</span></label>
+      <label><input type="radio" name="q2_4" value="一叫就起" /><span>一叫就起</span></label>
+      <label><input type="radio" name="q2_4" value="叫多次" /><span>要叫好几次</span></label>
+      <label><input type="radio" name="q2_4" value="非常困难" /><span>非常困难、起床气大</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">2.5 白天是否有以下情况？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q2_5" value="上午困" /><span>上午第 1–2 节课打瞌睡</span></label>
+      <label><input type="checkbox" name="q2_5" value="午饭后困" /><span>午饭后特别困</span></label>
+      <label><input type="checkbox" name="q2_5" value="下午易走神" /><span>下午易走神发呆</span></label>
+      <label><input type="checkbox" name="q2_5" value="放学没精神" /><span>放学回家"瘫"着没精神</span></label>
+      <label><input type="checkbox" name="q2_5" value="无明显" /><span>没有明显困倦</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">2.6 睡前最后 30 分钟通常在做什么？</div>
+    <textarea name="q2_6" placeholder="例如：刷手机/平板、写作业、看书、听音乐……"></textarea>
+  </div>
+</section>
+
+<!-- ============ 第 3 部分：饮食与身体 ============ -->
+<section class="section">
+  <h2>③ 饮食、身体与青春期 <span class="badge">生理基础</span></h2>
+  <p class="why">血糖波动、缺铁、缺 Omega-3、月经初潮前后的激素变化，都会显著影响女孩的注意力与情绪。这些常被忽视。</p>
+
+  <div class="question">
+    <div class="q-text">3.1 早餐情况</div>
+    <div class="options">
+      <label><input type="radio" name="q3_1" value="规律营养" /><span>每天吃，蛋白质+碳水均衡</span></label>
+      <label><input type="radio" name="q3_1" value="规律单一" /><span>每天吃但比较单一（如只喝粥/牛奶）</span></label>
+      <label><input type="radio" name="q3_1" value="经常凑合" /><span>经常路上凑合 / 边走边吃</span></label>
+      <label><input type="radio" name="q3_1" value="经常不吃" /><span>经常不吃 / 来不及吃</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">3.2 是否挑食偏食？尤其是以下哪些类别摄入偏少？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q3_2" value="红肉" /><span>红肉（牛羊猪）</span></label>
+      <label><input type="checkbox" name="q3_2" value="鱼类" /><span>深海鱼</span></label>
+      <label><input type="checkbox" name="q3_2" value="蛋奶" /><span>蛋/奶</span></label>
+      <label><input type="checkbox" name="q3_2" value="蔬菜" /><span>绿叶蔬菜</span></label>
+      <label><input type="checkbox" name="q3_2" value="水果" /><span>水果</span></label>
+      <label><input type="checkbox" name="q3_2" value="坚果" /><span>坚果</span></label>
+      <label><input type="checkbox" name="q3_2" value="不挑" /><span>基本不挑食</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">3.3 含糖饮料 / 甜食 / 油炸零食频率</div>
+    <div class="options">
+      <label><input type="radio" name="q3_3" value="几乎没有" /><span>几乎没有</span></label>
+      <label><input type="radio" name="q3_3" value="一周1-2次" /><span>一周 1–2 次</span></label>
+      <label><input type="radio" name="q3_3" value="一周3-5次" /><span>一周 3–5 次</span></label>
+      <label><input type="radio" name="q3_3" value="几乎每天" /><span>几乎每天</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">3.4 月经情况（如已初潮）</div>
+    <div class="options">
+      <label><input type="radio" name="q3_4" value="未初潮" /><span>尚未初潮</span></label>
+      <label><input type="radio" name="q3_4" value="规律" /><span>已初潮，周期较规律</span></label>
+      <label><input type="radio" name="q3_4" value="不规律" /><span>已初潮，周期不规律</span></label>
+      <label><input type="radio" name="q3_4" value="痛经明显" /><span>有明显痛经 / 经前情绪波动</span></label>
+    </div>
+    <div class="q-hint">经期前后激素变化可影响 1–2 周的认知表现，这是正常生理现象。</div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">3.5 视力 / 听力 / 其他健康问题</div>
+    <textarea name="q3_5" placeholder="例如：近视 200 度配戴眼镜、过敏性鼻炎常鼻塞、是否有过头部外伤……"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">3.6 最近一次体检（如有）是否提示：缺铁性贫血 / 维生素 D 偏低 / 甲状腺指标异常等？</div>
+    <textarea name="q3_6" placeholder="如未做体检或不记得，可写"未知"或"无"。"></textarea>
+  </div>
+</section>
+
+<!-- ============ 第 4 部分：运动与户外 ============ -->
+<section class="section">
+  <h2>④ 运动、户外与身体活动 <span class="badge">执行功能</span></h2>
+  <p class="why">有氧运动是公认的"前额叶兴奋剂"——可显著提升专注力、工作记忆和冲动控制。久坐与低运动量直接对应注意力下降。</p>
+
+  <div class="question">
+    <div class="q-text">4.1 一周中等强度以上运动（出汗、心跳加快）总时长大约</div>
+    <div class="options">
+      <label><input type="radio" name="q4_1" value="0" /><span>几乎没有</span></label>
+      <label><input type="radio" name="q4_1" value="1小时内" /><span>1 小时内</span></label>
+      <label><input type="radio" name="q4_1" value="1-3小时" /><span>1–3 小时</span></label>
+      <label><input type="radio" name="q4_1" value="3-5小时" /><span>3–5 小时</span></label>
+      <label><input type="radio" name="q4_1" value="5小时以上" /><span>5 小时以上</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">4.2 一天累计户外时间（含上下学路上、课间）</div>
+    <div class="options">
+      <label><input type="radio" name="q4_2" value="少于30分钟" /><span>少于 30 分钟</span></label>
+      <label><input type="radio" name="q4_2" value="30-60分钟" /><span>30–60 分钟</span></label>
+      <label><input type="radio" name="q4_2" value="1-2小时" /><span>1–2 小时</span></label>
+      <label><input type="radio" name="q4_2" value="2小时以上" /><span>2 小时以上</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">4.3 她有特别喜欢的运动 / 体育项目吗？</div>
+    <textarea name="q4_3" placeholder="例如：羽毛球、跑步、舞蹈、游泳；或"基本没有特别喜欢的"。"></textarea>
+  </div>
+</section>
+
+<!-- ============ 第 5 部分：屏幕与碎片化注意 ============ -->
+<section class="section">
+  <h2>⑤ 屏幕使用与注意力环境 <span class="badge">行为</span><span class="priority-tag">高优先级</span></h2>
+  <p class="why">短视频/游戏对多巴胺奖励系统的高强度刺激，会让大脑对"低强度信息（如题干文字）"变得不耐受——这可能是漏看条件、读题不细的隐形元凶。</p>
+
+  <div class="question">
+    <div class="q-text">5.1 平均每天非学习类屏幕使用时间（手机+平板+电视等总和）</div>
+    <div class="options">
+      <label><input type="radio" name="q5_1" value="少于30分钟" /><span>少于 30 分钟</span></label>
+      <label><input type="radio" name="q5_1" value="30-60分钟" /><span>30–60 分钟</span></label>
+      <label><input type="radio" name="q5_1" value="1-2小时" /><span>1–2 小时</span></label>
+      <label><input type="radio" name="q5_1" value="2-4小时" /><span>2–4 小时</span></label>
+      <label><input type="radio" name="q5_1" value="4小时以上" /><span>4 小时以上</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">5.2 她最常使用的内容类型？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q5_2" value="短视频" /><span>短视频（抖音/快手/小红书等）</span></label>
+      <label><input type="checkbox" name="q5_2" value="长视频" /><span>长视频（B 站/优酷/剧集）</span></label>
+      <label><input type="checkbox" name="q5_2" value="游戏" /><span>游戏</span></label>
+      <label><input type="checkbox" name="q5_2" value="社交" /><span>社交聊天（微信/QQ）</span></label>
+      <label><input type="checkbox" name="q5_2" value="阅读" /><span>电子书/阅读类 App</span></label>
+      <label><input type="checkbox" name="q5_2" value="学习" /><span>网课/学习类</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">5.3 写作业时手机 / 平板的位置</div>
+    <div class="options">
+      <label><input type="radio" name="q5_3" value="不在房间" /><span>不在房间内</span></label>
+      <label><input type="radio" name="q5_3" value="房间但远处" /><span>房间内但放在远处</span></label>
+      <label><input type="radio" name="q5_3" value="桌上" /><span>就在书桌上</span></label>
+      <label><input type="radio" name="q5_3" value="边写边看" /><span>边写边看</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">5.4 她是否表现出"必须有声音/视频陪伴才能学习"？</div>
+    <div class="options">
+      <label><input type="radio" name="q5_4" value="是" /><span>是</span></label>
+      <label><input type="radio" name="q5_4" value="偶尔" /><span>偶尔</span></label>
+      <label><input type="radio" name="q5_4" value="否" /><span>否，习惯安静</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第 6 部分：注意力与执行功能行为观察 ============ -->
+<section class="section">
+  <h2>⑥ 注意力与执行功能日常表现 <span class="badge">认知</span><span class="priority-tag">高优先级</span></h2>
+  <p class="why">真正的"诊断信号"——这些日常表现比任何测试都更能反映她的执行功能水平（工作记忆、抑制控制、组织计划）。</p>
+
+  <div class="question">
+    <div class="q-text">请根据日常观察评估以下行为出现频率（1=从不，5=总是）</div>
+    <div class="q-hint">"总是"不一定是问题，关键看分布模式。</div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">6.1 听到多步指令（如"先洗手、把书包放好、再来吃饭"），会漏掉其中一步</div>
+    <div class="scale-row">
+      <span class="scale-label">从不</span>
+      <div class="options">
+        <label><input type="radio" name="q6_1" value="1" /><span>1</span></label>
+        <label><input type="radio" name="q6_1" value="2" /><span>2</span></label>
+        <label><input type="radio" name="q6_1" value="3" /><span>3</span></label>
+        <label><input type="radio" name="q6_1" value="4" /><span>4</span></label>
+        <label><input type="radio" name="q6_1" value="5" /><span>5</span></label>
+      </div>
+      <span class="scale-label">总是</span>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">6.2 经常丢东西 / 找不到自己刚放下的东西</div>
+    <div class="scale-row">
+      <span class="scale-label">从不</span>
+      <div class="options">
+        <label><input type="radio" name="q6_2" value="1" /><span>1</span></label>
+        <label><input type="radio" name="q6_2" value="2" /><span>2</span></label>
+        <label><input type="radio" name="q6_2" value="3" /><span>3</span></label>
+        <label><input type="radio" name="q6_2" value="4" /><span>4</span></label>
+        <label><input type="radio" name="q6_2" value="5" /><span>5</span></label>
+      </div>
+      <span class="scale-label">总是</span>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">6.3 房间 / 书桌 / 书包整理凌乱，自己找不到东西</div>
+    <div class="scale-row">
+      <span class="scale-label">从不</span>
+      <div class="options">
+        <label><input type="radio" name="q6_3" value="1" /><span>1</span></label>
+        <label><input type="radio" name="q6_3" value="2" /><span>2</span></label>
+        <label><input type="radio" name="q6_3" value="3" /><span>3</span></label>
+        <label><input type="radio" name="q6_3" value="4" /><span>4</span></label>
+        <label><input type="radio" name="q6_3" value="5" /><span>5</span></label>
+      </div>
+      <span class="scale-label">总是</span>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">6.4 做事虎头蛇尾、容易半途切换到另一件事</div>
+    <div class="scale-row">
+      <span class="scale-label">从不</span>
+      <div class="options">
+        <label><input type="radio" name="q6_4" value="1" /><span>1</span></label>
+        <label><input type="radio" name="q6_4" value="2" /><span>2</span></label>
+        <label><input type="radio" name="q6_4" value="3" /><span>3</span></label>
+        <label><input type="radio" name="q6_4" value="4" /><span>4</span></label>
+        <label><input type="radio" name="q6_4" value="5" /><span>5</span></label>
+      </div>
+      <span class="scale-label">总是</span>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">6.5 做喜欢的事情（追剧/画画/看小说）能极度专注、忘记时间</div>
+    <div class="scale-row">
+      <span class="scale-label">从不</span>
+      <div class="options">
+        <label><input type="radio" name="q6_5" value="1" /><span>1</span></label>
+        <label><input type="radio" name="q6_5" value="2" /><span>2</span></label>
+        <label><input type="radio" name="q6_5" value="3" /><span>3</span></label>
+        <label><input type="radio" name="q6_5" value="4" /><span>4</span></label>
+        <label><input type="radio" name="q6_5" value="5" /><span>5</span></label>
+      </div>
+      <span class="scale-label">总是</span>
+    </div>
+    <div class="q-hint">"专注力分裂"现象——喜欢的事极专注，不喜欢的极涣散——是注意调节的特征信号。</div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">6.6 说话 / 做事容易冲动，话还没听完就开始回答</div>
+    <div class="scale-row">
+      <span class="scale-label">从不</span>
+      <div class="options">
+        <label><input type="radio" name="q6_6" value="1" /><span>1</span></label>
+        <label><input type="radio" name="q6_6" value="2" /><span>2</span></label>
+        <label><input type="radio" name="q6_6" value="3" /><span>3</span></label>
+        <label><input type="radio" name="q6_6" value="4" /><span>4</span></label>
+        <label><input type="radio" name="q6_6" value="5" /><span>5</span></label>
+      </div>
+      <span class="scale-label">总是</span>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">6.7 完成任务前不看完整说明 / 说明书 / 题干就开始做</div>
+    <div class="scale-row">
+      <span class="scale-label">从不</span>
+      <div class="options">
+        <label><input type="radio" name="q6_7" value="1" /><span>1</span></label>
+        <label><input type="radio" name="q6_7" value="2" /><span>2</span></label>
+        <label><input type="radio" name="q6_7" value="3" /><span>3</span></label>
+        <label><input type="radio" name="q6_7" value="4" /><span>4</span></label>
+        <label><input type="radio" name="q6_7" value="5" /><span>5</span></label>
+      </div>
+      <span class="scale-label">总是</span>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">6.8 自己安排时间 / 计划任务的能力</div>
+    <div class="options">
+      <label><input type="radio" name="q6_8" value="独立" /><span>能独立计划并执行</span></label>
+      <label><input type="radio" name="q6_8" value="部分" /><span>能列出来但执行打折</span></label>
+      <label><input type="radio" name="q6_8" value="提醒" /><span>需要提醒和监督</span></label>
+      <label><input type="radio" name="q6_8" value="无计划" /><span>基本没有计划意识</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第 7 部分：阅读与语言习惯 ============ -->
+<section class="section">
+  <h2>⑦ 阅读与语言习惯 <span class="badge">语文根源</span></h2>
+  <p class="why">语文"陌生题就错"高度可能源于课外阅读的深度和广度，以及日常语言互动的丰富度。</p>
+
+  <div class="question">
+    <div class="q-text">7.1 课外阅读频率（非教辅、非作文范文）</div>
+    <div class="options">
+      <label><input type="radio" name="q7_1" value="几乎不读" /><span>几乎不读</span></label>
+      <label><input type="radio" name="q7_1" value="偶尔" /><span>偶尔翻翻</span></label>
+      <label><input type="radio" name="q7_1" value="每周" /><span>每周固定读</span></label>
+      <label><input type="radio" name="q7_1" value="每天" /><span>几乎每天读</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">7.2 她最常读的书 / 内容类型？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q7_2" value="小说" /><span>小说（含网文）</span></label>
+      <label><input type="checkbox" name="q7_2" value="漫画" /><span>漫画 / 绘本</span></label>
+      <label><input type="checkbox" name="q7_2" value="科普" /><span>科普 / 历史</span></label>
+      <label><input type="checkbox" name="q7_2" value="散文" /><span>散文 / 随笔</span></label>
+      <label><input type="checkbox" name="q7_2" value="诗歌古文" /><span>诗歌 / 古文</span></label>
+      <label><input type="checkbox" name="q7_2" value="鸡汤" /><span>校园故事 / 鸡汤</span></label>
+      <label><input type="checkbox" name="q7_2" value="基本不读" /><span>基本不读</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">7.3 读完一篇文章 / 看完一部剧后，她能否清晰复述主要情节和作者意图？</div>
+    <div class="options">
+      <label><input type="radio" name="q7_3" value="清晰深入" /><span>清晰，且能说出自己的理解/评价</span></label>
+      <label><input type="radio" name="q7_3" value="情节为主" /><span>能说情节，但说不出更深层意思</span></label>
+      <label><input type="radio" name="q7_3" value="片段化" /><span>只记得片段</span></label>
+      <label><input type="radio" name="q7_3" value="说不出" /><span>基本说不出</span></label>
+    </div>
+    <div class="q-hint">这是语文"深层理解能力"的核心信号。</div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">7.4 家庭日常对话的内容更偏向</div>
+    <div class="options">
+      <label><input type="radio" name="q7_4" value="事务" /><span>大部分是事务性（吃饭、作业、衣服）</span></label>
+      <label><input type="radio" name="q7_4" value="混合" /><span>事务+一些观点和讨论</span></label>
+      <label><input type="radio" name="q7_4" value="深入" /><span>经常讨论新闻、电影、人生话题</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">7.5 她在家是否会主动表达观点、与家长辩论？</div>
+    <div class="options">
+      <label><input type="radio" name="q7_5" value="经常" /><span>经常</span></label>
+      <label><input type="radio" name="q7_5" value="偶尔" /><span>偶尔</span></label>
+      <label><input type="radio" name="q7_5" value="很少" /><span>很少</span></label>
+      <label><input type="radio" name="q7_5" value="不敢" /><span>不太敢说</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第 8 部分：情绪、心理与自我评价 ============ -->
+<section class="section">
+  <h2>⑧ 情绪、心理与自我评价 <span class="badge">心理学</span><span class="priority-tag">高优先级</span></h2>
+  <p class="why">焦虑、低自尊、完美主义会显著占用工作记忆资源——她不是"不细心"，而是"心里在跑别的程序"。</p>
+
+  <div class="question">
+    <div class="q-text">8.1 她整体情绪稳定性</div>
+    <div class="options">
+      <label><input type="radio" name="q8_1" value="稳定" /><span>大部分时间情绪平稳</span></label>
+      <label><input type="radio" name="q8_1" value="较稳定" /><span>偶尔波动</span></label>
+      <label><input type="radio" name="q8_1" value="易波动" /><span>容易波动 / 一点小事就生气哭闹</span></label>
+      <label><input type="radio" name="q8_1" value="低落" /><span>常感到低落、提不起劲</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">8.2 考试 / 当众回答问题时的紧张程度</div>
+    <div class="options">
+      <label><input type="radio" name="q8_2" value="放松" /><span>基本不紧张</span></label>
+      <label><input type="radio" name="q8_2" value="略紧张" /><span>略紧张但不影响</span></label>
+      <label><input type="radio" name="q8_2" value="明显" /><span>明显紧张、影响发挥</span></label>
+      <label><input type="radio" name="q8_2" value="严重" /><span>非常紧张、有躯体反应（手抖/胃疼）</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">8.3 她对自己的评价是？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q8_3" value="自信" /><span>"我挺不错的"</span></label>
+      <label><input type="checkbox" name="q8_3" value="完美主义" /><span>"我不能错"</span></label>
+      <label><input type="checkbox" name="q8_3" value="粗心标签" /><span>"我就是粗心"</span></label>
+      <label><input type="checkbox" name="q8_3" value="不够好" /><span>"我比别人差"</span></label>
+      <label><input type="checkbox" name="q8_3" value="不喜欢学习" /><span>"我学不会 / 不爱学"</span></label>
+      <label><input type="checkbox" name="q8_3" value="不确定" /><span>不太清楚她怎么想</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">8.4 错题被指出时，她的典型反应</div>
+    <div class="options">
+      <label><input type="radio" name="q8_4" value="积极" /><span>愿意重看、改正</span></label>
+      <label><input type="radio" name="q8_4" value="嫌烦" /><span>嫌烦但能改</span></label>
+      <label><input type="radio" name="q8_4" value="否认" /><span>下意识否认 / 找借口</span></label>
+      <label><input type="radio" name="q8_4" value="情绪化" /><span>哭、生气、自责</span></label>
+      <label><input type="radio" name="q8_4" value="麻木" /><span>无所谓、麻木</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">8.5 她会因为犯错而过度自责吗？</div>
+    <div class="options">
+      <label><input type="radio" name="q8_5" value="是" /><span>是，明显过度</span></label>
+      <label><input type="radio" name="q8_5" value="有时" /><span>有时</span></label>
+      <label><input type="radio" name="q8_5" value="不会" /><span>不会</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">8.6 最近 3 个月有没有出现以下变化？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q8_6" value="食欲变化" /><span>食欲明显变化</span></label>
+      <label><input type="checkbox" name="q8_6" value="睡眠变化" /><span>睡眠模式明显变化</span></label>
+      <label><input type="checkbox" name="q8_6" value="兴趣减退" /><span>对原来喜欢的事失去兴趣</span></label>
+      <label><input type="checkbox" name="q8_6" value="社交退缩" /><span>不愿出门、不愿见朋友</span></label>
+      <label><input type="checkbox" name="q8_6" value="过度依赖" /><span>过度黏家长 / 过度独处</span></label>
+      <label><input type="checkbox" name="q8_6" value="无明显" /><span>无明显变化</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第 9 部分：家庭氛围与亲子互动 ============ -->
+<section class="section">
+  <h2>⑨ 家庭氛围与亲子互动 <span class="badge">环境</span></h2>
+  <p class="why">家庭情绪环境直接影响孩子的"心理安全感"——安全感不足时，大脑会把资源用于"应对环境"而不是学习。</p>
+
+  <div class="question">
+    <div class="q-text">9.1 家庭日常氛围</div>
+    <div class="options">
+      <label><input type="radio" name="q9_1" value="温和" /><span>温和、有说有笑</span></label>
+      <label><input type="radio" name="q9_1" value="平静" /><span>平静、各做各的</span></label>
+      <label><input type="radio" name="q9_1" value="紧张" /><span>常有争吵 / 紧张</span></label>
+      <label><input type="radio" name="q9_1" value="冷淡" /><span>沉默、冷淡</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">9.2 父母对她学业的态度更接近</div>
+    <div class="options">
+      <label><input type="radio" name="q9_2" value="高压" /><span>要求高、密切关注成绩</span></label>
+      <label><input type="radio" name="q9_2" value="鼓励" /><span>鼓励为主、允许错误</span></label>
+      <label><input type="radio" name="q9_2" value="放手" /><span>较为放手、由她自己负责</span></label>
+      <label><input type="radio" name="q9_2" value="不一致" /><span>父母态度不一致</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">9.3 孩子犯错（不仅指学习）时，您最常见的反应</div>
+    <div class="options">
+      <label><input type="radio" name="q9_3" value="共同分析" /><span>共同分析原因</span></label>
+      <label><input type="radio" name="q9_3" value="提醒" /><span>口头提醒、下次注意</span></label>
+      <label><input type="radio" name="q9_3" value="批评" /><span>批评 / 讲道理</span></label>
+      <label><input type="radio" name="q9_3" value="责骂" /><span>责骂 / 失控</span></label>
+      <label><input type="radio" name="q9_3" value="不管" /><span>基本不管</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">9.4 孩子愿意和您聊"难过、害怕、烦恼"等负面感受吗？</div>
+    <div class="options">
+      <label><input type="radio" name="q9_4" value="经常" /><span>经常</span></label>
+      <label><input type="radio" name="q9_4" value="偶尔" /><span>偶尔</span></label>
+      <label><input type="radio" name="q9_4" value="很少" /><span>很少</span></label>
+      <label><input type="radio" name="q9_4" value="不会" /><span>几乎不会</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">9.5 家庭近 1 年是否经历较大变化？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q9_5" value="搬家" /><span>搬家 / 转学</span></label>
+      <label><input type="checkbox" name="q9_5" value="弟妹" /><span>添了弟弟妹妹</span></label>
+      <label><input type="checkbox" name="q9_5" value="父母关系" /><span>父母关系变化</span></label>
+      <label><input type="checkbox" name="q9_5" value="亲人离世" /><span>亲人离世 / 重病</span></label>
+      <label><input type="checkbox" name="q9_5" value="经济" /><span>家庭经济变化</span></label>
+      <label><input type="checkbox" name="q9_5" value="无" /><span>无明显变化</span></label>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 第 10 部分：学习习惯具体观察 ============ -->
+<section class="section">
+  <h2>⑩ 学习场景具体观察 <span class="badge">微观行为</span></h2>
+  <p class="why">这一节直接对应原始问题，请尽量具体描述，越细节越好。</p>
+
+  <div class="question">
+    <div class="q-text">10.1 写作业时她的姿势 / 状态通常是？</div>
+    <div class="options">
+      <label><input type="radio" name="q10_1" value="端坐专注" /><span>端坐、能专注 30 分钟以上</span></label>
+      <label><input type="radio" name="q10_1" value="时常分心" /><span>坐着但小动作多、易分心</span></label>
+      <label><input type="radio" name="q10_1" value="瘫坐" /><span>瘫在椅子里 / 趴桌子</span></label>
+      <label><input type="radio" name="q10_1" value="频繁起身" /><span>频繁起身、走动</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">10.2 做数学题时，她有"打草稿、圈关键词、画图"的习惯吗？</div>
+    <div class="options">
+      <label><input type="radio" name="q10_2" value="充分" /><span>有，过程清晰</span></label>
+      <label><input type="radio" name="q10_2" value="部分" /><span>偶尔有，时好时坏</span></label>
+      <label><input type="radio" name="q10_2" value="心算" /><span>很多步骤心算</span></label>
+      <label><input type="radio" name="q10_2" value="无" /><span>基本没有</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">10.3 做完一道题（或一份作业）后，她检查吗？</div>
+    <div class="options">
+      <label><input type="radio" name="q10_3" value="主动检查" /><span>主动、会重新算一遍</span></label>
+      <label><input type="radio" name="q10_3" value="走过场" /><span>翻一遍但走过场</span></label>
+      <label><input type="radio" name="q10_3" value="不检查" /><span>基本不检查</span></label>
+      <label><input type="radio" name="q10_3" value="拒绝" /><span>不愿意检查、想赶紧结束</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">10.4 错的题目被讲解后，她下次遇到类似题</div>
+    <div class="options">
+      <label><input type="radio" name="q10_4" value="不再错" /><span>能避免</span></label>
+      <label><input type="radio" name="q10_4" value="偶尔再错" /><span>偶尔再错</span></label>
+      <label><input type="radio" name="q10_4" value="还是错" /><span>同样的错反复出现</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">10.5 读语文阅读题时，她是否有"勾画 / 批注 / 二次回读"的习惯？</div>
+    <div class="options">
+      <label><input type="radio" name="q10_5" value="有" /><span>有</span></label>
+      <label><input type="radio" name="q10_5" value="部分" /><span>偶尔</span></label>
+      <label><input type="radio" name="q10_5" value="没有" /><span>没有，读一遍就开始答</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">10.6 请举 1–2 个最近的"会做却做错"的具体例子，越详细越好</div>
+    <div class="q-hint">例如：什么题、错在哪一步、当时的状态、被问为什么时她怎么说。</div>
+    <textarea name="q10_6" placeholder="例：上周末做应用题，列式正确 -3+5=2，但抄答案时写成 -2，问她为什么，她说"我看错了"，但当时没刷手机，作业是早上做的……"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">10.7 请举一个最近"陌生语文题答非所问"的例子</div>
+    <textarea name="q10_7" placeholder="例：阅读理解问"作者通过XX表达了什么情感"，她答的是"作者写了XX发生了什么"……"></textarea>
+  </div>
+</section>
+
+<!-- ============ 第 11 部分：兴趣、性格、社交 ============ -->
+<section class="section">
+  <h2>⑪ 兴趣、性格与社交 <span class="badge">个性</span></h2>
+  <p class="why">个性特点决定了同样的训练方法适不适合她；社交关系决定她的情绪资源水平。</p>
+
+  <div class="question">
+    <div class="q-text">11.1 她的性格更偏向</div>
+    <div class="options">
+      <label><input type="radio" name="q11_1" value="外向" /><span>外向、活跃</span></label>
+      <label><input type="radio" name="q11_1" value="中间" /><span>中间</span></label>
+      <label><input type="radio" name="q11_1" value="内向" /><span>内向、安静</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">11.2 她有 1–2 个能聊心事的朋友吗？</div>
+    <div class="options">
+      <label><input type="radio" name="q11_2" value="有" /><span>有</span></label>
+      <label><input type="radio" name="q11_2" value="点头之交" /><span>有玩伴但谈不上知心</span></label>
+      <label><input type="radio" name="q11_2" value="无" /><span>基本没有</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">11.3 她最热爱（不被要求也会做）的事情是？</div>
+    <textarea name="q11_3" placeholder="例如：画画、写小说、追星、养宠物、研究化妆……"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">11.4 在她的兴趣里，她展现出</div>
+    <div class="options">
+      <label><input type="checkbox" name="q11_4" value="持续力" /><span>持续力（能坚持很久）</span></label>
+      <label><input type="checkbox" name="q11_4" value="深入" /><span>深入钻研（会主动研究）</span></label>
+      <label><input type="checkbox" name="q11_4" value="创造" /><span>创造性（自己做、自己想）</span></label>
+      <label><input type="checkbox" name="q11_4" value="组织" /><span>组织性（能计划安排）</span></label>
+      <label><input type="checkbox" name="q11_4" value="较浅" /><span>三分钟热度</span></label>
+    </div>
+    <div class="q-hint">这非常关键——如果她在兴趣中能展现"持续/深入/组织"，说明能力是有的，问题是"调不到学习场景"。</div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">11.5 她对"学习的意义"有过表达吗？</div>
+    <textarea name="q11_5" placeholder="例如：她说过"为什么要学这些"、"我以后想做XX"、"妈妈让我学的"……"></textarea>
+  </div>
+</section>
+
+<!-- ============ 第 12 部分：早期发育（重要补充） ============ -->
+<section class="section">
+  <h2>⑫ 早期发育简史 <span class="badge">背景</span></h2>
+  <p class="why">早期发育里程碑能帮助识别一些容易被忽略的认知特点。</p>
+
+  <div class="question">
+    <div class="q-text">12.1 学说话 / 学走路 / 上学适应等，是否有任何与同龄孩子明显不同的地方？</div>
+    <textarea name="q12_1" placeholder="例如：说话比同龄晚 / 早，3 岁前一直被认为内向，幼儿园分离焦虑严重，小学一年级常说听不懂课……"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">12.2 是否曾被老师反馈"上课走神 / 做小动作 / 不举手 / 反应慢"等？</div>
+    <textarea name="q12_2" placeholder="如有，请写大概年级和反馈内容。"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">12.3 家族中有近亲（父母、兄弟姐妹、祖辈）有学习障碍 / 注意缺陷 / 焦虑抑郁 / 阅读困难等情况吗？</div>
+    <textarea name="q12_3" placeholder="如有可写大概情况，无可写"无"或"未知"。这些有一定遗传倾向，了解有助分析。"></textarea>
+  </div>
+</section>
+
+<!-- ============ 第 13 部分：开放表达 ============ -->
+<section class="section">
+  <h2>⑬ 您的补充与最关心的问题 <span class="badge">开放</span></h2>
+
+  <div class="question">
+    <div class="q-text">13.1 还有什么您觉得很重要但前面问卷没覆盖的信息？</div>
+    <textarea name="q13_1" placeholder="任何细节都可以——可能是您一直觉得"是不是和这个有关"的小事。"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">13.2 您最希望孩子在 3–6 个月内有哪些具体改变？</div>
+    <textarea name="q13_2" placeholder="例如：减少计算错误一半；阅读理解能独立做对 70% 以上；自己能查作业；情绪更稳定……"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">13.3 您和孩子之前尝试过哪些方法？效果如何？</div>
+    <textarea name="q13_3" placeholder="例如：错题本（坚持了 2 周放弃）、上注意力训练班（无明显效果）、奖励机制（开始有效后失效）……"></textarea>
+  </div>
+</section>
+
+<div class="toolbar">
+  <button class="btn-secondary" onclick="saveDraft()">💾 保存草稿到浏览器</button>
+  <button class="btn-secondary" onclick="loadDraft()">📂 加载上次草稿</button>
+  <button class="btn-primary" onclick="exportAnswers()">📤 导出答案（复制给 Kiro）</button>
+</div>
+
+</div>
+
+<!-- 导出弹窗 -->
+<div id="output-modal">
+  <div class="modal-box">
+    <h3>📋 您的答案已整理如下，请全部复制后粘贴到聊天给我</h3>
+    <p style="font-size:13px;color:#6b7a8f;">提示：未填的题会显示"未填"，您可以选择性删掉不想分享的部分。</p>
+    <textarea id="output-text" readonly></textarea>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">关闭</button>
+      <button class="btn-success" onclick="copyToClipboard()">📋 一键复制</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 题目标题映射，用于导出时显示中文
+  const questionTitles = {
+    q1_1: "1.1 年级/在校情况",
+    q1_2: "1.2 班级位置",
+    q1_3: "1.3 其他科目类似情况",
+    q1_4: "1.4 易错出现时间",
+    q2_1: "2.1 入睡/起床时间",
+    q2_2: "2.2 周末补觉",
+    q2_3: "2.3 入睡情况",
+    q2_4: "2.4 早晨叫醒难度",
+    q2_5: "2.5 白天困倦表现",
+    q2_6: "2.6 睡前最后30分钟",
+    q3_1: "3.1 早餐情况",
+    q3_2: "3.2 偏食类别",
+    q3_3: "3.3 含糖/油炸频率",
+    q3_4: "3.4 月经情况",
+    q3_5: "3.5 视听力/健康",
+    q3_6: "3.6 体检异常",
+    q4_1: "4.1 周运动时长",
+    q4_2: "4.2 日户外时长",
+    q4_3: "4.3 喜欢的运动",
+    q5_1: "5.1 屏幕时长",
+    q5_2: "5.2 屏幕内容类型",
+    q5_3: "5.3 写作业时手机位置",
+    q5_4: "5.4 是否需要声音陪伴",
+    q6_1: "6.1 漏多步指令",
+    q6_2: "6.2 丢东西",
+    q6_3: "6.3 房间凌乱",
+    q6_4: "6.4 虎头蛇尾",
+    q6_5: "6.5 兴趣事物极度专注",
+    q6_6: "6.6 冲动回答",
+    q6_7: "6.7 不读完说明就做",
+    q6_8: "6.8 计划能力",
+    q7_1: "7.1 课外阅读频率",
+    q7_2: "7.2 阅读类型",
+    q7_3: "7.3 复述/理解能力",
+    q7_4: "7.4 家庭对话内容",
+    q7_5: "7.5 孩子表达观点",
+    q8_1: "8.1 情绪稳定性",
+    q8_2: "8.2 考试紧张度",
+    q8_3: "8.3 自我评价",
+    q8_4: "8.4 错题反应",
+    q8_5: "8.5 过度自责",
+    q8_6: "8.6 近3月变化",
+    q9_1: "9.1 家庭氛围",
+    q9_2: "9.2 父母对学业态度",
+    q9_3: "9.3 犯错时家长反应",
+    q9_4: "9.4 孩子是否倾诉负面情绪",
+    q9_5: "9.5 近1年家庭变化",
+    q10_1: "10.1 写作业姿态",
+    q10_2: "10.2 草稿/圈词习惯",
+    q10_3: "10.3 是否检查作业",
+    q10_4: "10.4 错题再次遇到",
+    q10_5: "10.5 阅读题勾画习惯",
+    q10_6: "10.6 数学错例（具体）",
+    q10_7: "10.7 语文错例（具体）",
+    q11_1: "11.1 性格倾向",
+    q11_2: "11.2 知心朋友",
+    q11_3: "11.3 最热爱的事",
+    q11_4: "11.4 兴趣中展现的能力",
+    q11_5: "11.5 对学习意义的表达",
+    q12_1: "12.1 早期发育特点",
+    q12_2: "12.2 老师早年反馈",
+    q12_3: "12.3 家族相关史",
+    q13_1: "13.1 补充信息",
+    q13_2: "13.2 期望改变",
+    q13_3: "13.3 已尝试过的方法"
+  };
+
+  function collectAnswers() {
+    const data = {};
+    for (const key of Object.keys(questionTitles)) {
+      const elements = document.getElementsByName(key);
+      if (elements.length === 0) continue;
+      if (elements[0].type === "radio") {
+        const checked = Array.from(elements).find(el => el.checked);
+        data[key] = checked ? checked.value : "（未填）";
+      } else if (elements[0].type === "checkbox") {
+        const checked = Array.from(elements).filter(el => el.checked).map(el => el.value);
+        data[key] = checked.length ? checked.join("、") : "（未填）";
+      } else {
+        data[key] = elements[0].value.trim() || "（未填）";
+      }
+    }
+    return data;
+  }
+
+  function exportAnswers() {
+    const data = collectAnswers();
+    let lines = ["===== 13岁女孩学习与生活多维度评估问卷·答案 =====\n"];
+    let currentSection = "";
+    const sectionMap = {
+      "1": "① 基本背景",
+      "2": "② 睡眠状况",
+      "3": "③ 饮食、身体与青春期",
+      "4": "④ 运动、户外与身体活动",
+      "5": "⑤ 屏幕使用与注意力环境",
+      "6": "⑥ 注意力与执行功能日常表现（1=从不，5=总是）",
+      "7": "⑦ 阅读与语言习惯",
+      "8": "⑧ 情绪、心理与自我评价",
+      "9": "⑨ 家庭氛围与亲子互动",
+      "10": "⑩ 学习场景具体观察",
+      "11": "⑪ 兴趣、性格与社交",
+      "12": "⑫ 早期发育简史",
+      "13": "⑬ 补充与期望"
+    };
+    for (const key of Object.keys(questionTitles)) {
+      const sec = key.match(/^q(\d+)_/)[1];
+      if (sec !== currentSection) {
+        currentSection = sec;
+        lines.push("\n【" + sectionMap[sec] + "】");
+      }
+      lines.push(questionTitles[key] + "：" + data[key]);
+    }
+    document.getElementById("output-text").value = lines.join("\n");
+    document.getElementById("output-modal").classList.add("show");
+  }
+
+  function closeModal() {
+    document.getElementById("output-modal").classList.remove("show");
+  }
+
+  function copyToClipboard() {
+    const ta = document.getElementById("output-text");
+    ta.select();
+    document.execCommand("copy");
+    alert("已复制到剪贴板，请粘贴给 Kiro。");
+  }
+
+  function saveDraft() {
+    const data = {};
+    document.querySelectorAll("input, textarea").forEach(el => {
+      if (el.type === "radio" || el.type === "checkbox") {
+        if (el.checked) {
+          if (!data[el.name]) data[el.name] = [];
+          data[el.name].push(el.value);
+        }
+      } else {
+        data[el.name] = el.value;
+      }
+    });
+    localStorage.setItem("childAssessmentDraft", JSON.stringify(data));
+    alert("草稿已保存到本浏览器，下次打开点"加载上次草稿"即可恢复。");
+  }
+
+  function loadDraft() {
+    const raw = localStorage.getItem("childAssessmentDraft");
+    if (!raw) { alert("没有找到上次保存的草稿。"); return; }
+    const data = JSON.parse(raw);
+    document.querySelectorAll("input, textarea").forEach(el => {
+      if (el.type === "radio" || el.type === "checkbox") {
+        const arr = data[el.name] || [];
+        el.checked = arr.includes(el.value);
+      } else {
+        el.value = data[el.name] || "";
+      }
+    });
+    alert("已恢复上次草稿。");
+  }
+
+  // 点击模态背景关闭
+  document.getElementById("output-modal").addEventListener("click", e => {
+    if (e.target.id === "output-modal") closeModal();
+  });
+</script>
+
+</body>
+</html>
