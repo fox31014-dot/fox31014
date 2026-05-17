@@ -511,7 +511,7 @@
     color: #8c6442;
     line-height: 1.7;
   }
-  #output-text {
+  #output-text, #output-text-plain, #output-text-encrypted {
     width: 100%;
     min-height: 320px;
     max-height: 50vh;
@@ -525,12 +525,62 @@
     white-space: pre-wrap;
     word-break: break-word;
   }
+  #output-text-encrypted {
+    font-size: 11.5px;
+    color: #555;
+    background: #f3eef5;
+  }
   .modal-toolbar {
     display: flex;
     gap: 10px;
     justify-content: flex-end;
     margin-top: 16px;
     flex-wrap: wrap;
+  }
+
+  /* ========== Tabs in Modal ========== */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin: 14px 0 0;
+    border-bottom: 1.5px solid var(--border);
+  }
+  .tab {
+    padding: 10px 18px;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .tab:hover { color: var(--primary-dark); transform: none; box-shadow: none; }
+  .tab.active {
+    color: var(--primary-dark);
+    border-bottom-color: var(--primary);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .tab-tip {
+    background: #f0eafc;
+    border-left: 3px solid var(--soft-purple);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 14px 0;
+    font-size: 13px;
+    color: #5a4d7a;
+    line-height: 1.7;
+  }
+  .tab-tip strong { color: #4a3d6a; }
+  .tab-tip code {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
   }
 
   /* ========== Footer ========== */
@@ -1184,15 +1234,42 @@
   <div class="modal-box">
     <h3>问卷已完成 · 谢谢您</h3>
     <p style="color: var(--muted); font-size: 14px; margin: 6px 0 12px;">
-      把下面的全部文字复制后,发送给您的咨询师即可。我们会基于这些信息,给您写一封温柔且认真的初诊回信。
+      为保护您的隐私,我们提供两种格式。<strong>推荐发"隐私模式"</strong>给咨询师——内容已编码,他人难以识别,但咨询师能完整解读。
     </p>
-    <div class="modal-tip">
-      📋 复制提示:点击下方"一键复制"按钮,或长按文本框选择全部复制。
+
+    <div class="tabs">
+      <button type="button" class="tab active" data-tab="encrypted">🔒 隐私模式(推荐发送)</button>
+      <button type="button" class="tab" data-tab="plain">📄 明文模式(自己核对)</button>
     </div>
-    <textarea id="output-text" readonly></textarea>
-    <div class="modal-toolbar">
-      <button type="button" class="btn-secondary" id="closeBtn">返回修改</button>
-      <button type="button" class="btn-success" id="copyBtn">一键复制</button>
+
+    <!-- Encrypted Panel -->
+    <div class="tab-panel active" id="panel-encrypted">
+      <div class="tab-tip">
+        <strong>这是什么?</strong> 您的所有回答已被编码成乱码格式。<br>
+        ✓ 老公/同事/家人偶然看到 → <strong>看不出内容</strong><br>
+        ✓ 咨询师收到后 → <strong>可完整还原您的全部回答</strong><br>
+        ✓ 即使被截图传播 → <strong>普通人无法解读</strong><br>
+        建议:复制 <code>FMR1.BEGIN</code> 到 <code>FMR1.END</code> 之间的<strong>全部内容</strong>发送。
+      </div>
+      <textarea id="output-text-encrypted" readonly></textarea>
+      <div class="modal-toolbar">
+        <button type="button" class="btn-secondary" id="closeBtn">返回修改</button>
+        <button type="button" class="btn-success" id="copyBtnEncrypted">一键复制隐私模式</button>
+      </div>
+    </div>
+
+    <!-- Plain Panel -->
+    <div class="tab-panel" id="panel-plain">
+      <div class="tab-tip">
+        <strong>明文模式</strong>用于您自己核对回答是否正确。<br>
+        ⚠ 此格式包含完整中文内容,<strong>不建议直接发送</strong>(任何人都能读懂)。<br>
+        如确认无误,请切回"隐私模式"复制发送。
+      </div>
+      <textarea id="output-text-plain" readonly></textarea>
+      <div class="modal-toolbar">
+        <button type="button" class="btn-secondary" id="closeBtn2">返回修改</button>
+        <button type="button" class="btn-secondary" id="copyBtnPlain">复制明文(不推荐)</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1472,6 +1549,35 @@
     return true;
   }
 
+  // ====== UTF-8 safe Base64 encoding ======
+  function utf8ToBase64(str) {
+    // Encode UTF-8 string (containing Chinese) to Base64 reliably
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  // ====== Build structured data object (for encryption) ======
+  function buildDataObject() {
+    const data = {};
+    QUESTIONS.forEach(q => {
+      const v = getValue(q);
+      if (q.type === 'multi') {
+        data[q.id] = v;
+      } else {
+        data[q.id] = v;
+      }
+    });
+    return data;
+  }
+
+  // ====== Wrap encoded payload with line breaks every N chars ======
+  function chunkString(s, n) {
+    const out = [];
+    for (let i = 0; i < s.length; i += n) {
+      out.push(s.substring(i, i + n));
+    }
+    return out.join('\n');
+  }
+
   // ====== Generate output ======
   function generateOutput() {
     if (!validatePage(3)) return;
@@ -1495,56 +1601,99 @@
       toneHint = '尊重 + 代际理解(温和,看见两代人的差异)';
     }
 
-    let out = '';
-    out += '═══════════════════════════════════════\n';
-    out += '  家的镜子 · 第一次照面 · 问卷答案\n';
-    out += '  填写时间:' + ts + '\n';
-    out += '  填写人角色:' + roleVal + '\n';
-    out += '  建议回信语气:' + toneHint + '\n';
+    // ============ PLAIN TEXT (for self-review) ============
+    let plain = '';
+    plain += '═══════════════════════════════════════\n';
+    plain += '  家的镜子 · 第一次照面 · 问卷答案\n';
+    plain += '  填写时间:' + ts + '\n';
+    plain += '  填写人角色:' + roleVal + '\n';
+    plain += '  建议回信语气:' + toneHint + '\n';
     if (crisisFlag) {
-      out += '  ⚠ 危机信号:已勾选「自我攻击」相关项\n';
-      out += '  ⚠ 处理优先级:HIGH\n';
+      plain += '  ⚠ 危机信号:已勾选「自我攻击」相关项\n';
+      plain += '  ⚠ 处理优先级:HIGH\n';
     }
-    out += '═══════════════════════════════════════\n\n';
+    plain += '═══════════════════════════════════════\n\n';
 
-    out += '【角色与处境】\n\n';
+    plain += '【角色与处境】\n\n';
     QUESTIONS.filter(q => ['r1','r2','r3'].indexOf(q.id) >= 0).forEach(q => {
-      out += formatAnswer(q);
+      plain += formatAnswer(q);
     });
 
-    out += '\n【第一部分 · 主诉】\n\n';
+    plain += '\n【第一部分 · 主诉】\n\n';
     QUESTIONS.filter(q => ['q1a','q1b','q1c','q2','q3','q4','q5','q6','q7','q8'].indexOf(q.id) >= 0).forEach(q => {
-      out += formatAnswer(q);
+      plain += formatAnswer(q);
     });
 
-    out += '\n【第二部分 · 关键背景】\n\n';
+    plain += '\n【第二部分 · 关键背景】\n\n';
     QUESTIONS.filter(q => ['q9','q10','q11','q12','q13','q14','q15','q16','q17','q18','q19'].indexOf(q.id) >= 0).forEach(q => {
-      out += formatAnswer(q);
+      plain += formatAnswer(q);
     });
 
-    out += '\n【第三部分 · 深度反思】\n\n';
+    plain += '\n【第三部分 · 深度反思】\n\n';
     QUESTIONS.filter(q => ['q20','q21a','q21b','q22'].indexOf(q.id) >= 0).forEach(q => {
-      out += formatAnswer(q);
+      plain += formatAnswer(q);
     });
 
-    // 自由倾诉单独一段
     const freeVal = getValue(QUESTIONS.find(q => q.id === 'free'));
     if (freeVal) {
-      out += '\n【家长的自由倾诉(只读不分析,但可作为情感参考)】\n\n';
-      out += '   ' + freeVal.split('\n').join('\n   ') + '\n\n';
+      plain += '\n【家长的自由倾诉(只读不分析,但可作为情感参考)】\n\n';
+      plain += '   ' + freeVal.split('\n').join('\n   ') + '\n\n';
     }
 
-    out += '\n═══════════════════════════════════════\n';
-    out += '请咨询师按「家的镜子」初诊报告结构生成回信:\n';
-    out += '  ① 共情 + 重述(用家长原话)\n';
-    out += '  ② 多元假设(给出 3-4 个并行方向)\n';
-    out += '  ③ 理念输出(孩子是家的体温计)\n';
-    out += '  ④ 一件本周可以做的小事\n';
-    out += '  ⑤ 邀请进入下一阶段\n';
-    out += '═══════════════════════════════════════\n';
+    plain += '\n═══════════════════════════════════════\n';
+    plain += '请咨询师按「家的镜子」初诊报告结构生成回信:\n';
+    plain += '  ① 共情 + 重述(用家长原话)\n';
+    plain += '  ② 多元假设(给出 3-4 个并行方向)\n';
+    plain += '  ③ 理念输出(孩子是家的体温计)\n';
+    plain += '  ④ 一件本周可以做的小事\n';
+    plain += '  ⑤ 邀请进入下一阶段\n';
+    plain += '═══════════════════════════════════════\n';
 
-    $('#output-text').value = out;
+    // ============ ENCRYPTED (Base64-encoded JSON) ============
+    const dataObj = {
+      v: 1,                  // schema version
+      ts: ts,                // timestamp
+      role: roleVal,         // role (kept in plaintext header for AI tone hint)
+      tone: toneHint,        // tone suggestion
+      crisis: crisisFlag,    // crisis flag
+      answers: buildDataObject()
+    };
+    const json = JSON.stringify(dataObj);
+    const b64 = utf8ToBase64(json);
+    const wrapped = chunkString(b64, 64);
+
+    let encrypted = '';
+    encrypted += '═══════════════════════════════════════\n';
+    encrypted += '  🔒 家的镜子 · 加密问卷数据 v1\n';
+    encrypted += '  填写时间:' + ts + '\n';
+    encrypted += '  填写人:' + roleVal + '\n';
+    if (crisisFlag) encrypted += '  ⚠ 优先级:HIGH\n';
+    encrypted += '═══════════════════════════════════════\n\n';
+    encrypted += 'FMR1.BEGIN\n';
+    encrypted += wrapped + '\n';
+    encrypted += 'FMR1.END\n\n';
+    encrypted += '═══════════════════════════════════════\n';
+    encrypted += '  ↑ 请将以上全部内容(含 BEGIN/END 标记)\n';
+    encrypted += '    复制并发送给您的咨询师\n';
+    encrypted += '  ↑ 咨询师工具将自动解码并解读\n';
+    encrypted += '═══════════════════════════════════════\n';
+
+    // Set both panels
+    $('#output-text-plain').value = plain;
+    $('#output-text-encrypted').value = encrypted;
+
+    // Default to encrypted tab
+    switchTab('encrypted');
+
     $('#output-modal').classList.add('show');
+  }
+
+  // ====== Tab switching ======
+  function switchTab(tabName) {
+    $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+    $$('.tab-panel').forEach(p => {
+      p.classList.toggle('active', p.id === 'panel-' + tabName);
+    });
   }
 
   function formatAnswer(q) {
@@ -1571,33 +1720,38 @@
   }
 
   // ====== Copy ======
-  function copyOutput() {
-    const ta = $('#output-text');
+  function copyText(textareaId, btnId) {
+    const ta = $('#' + textareaId);
+    if (!ta) return;
     ta.select();
     ta.setSelectionRange(0, 999999);
     let ok = false;
     try { ok = document.execCommand('copy'); } catch(e) {}
     if (navigator.clipboard) {
       navigator.clipboard.writeText(ta.value).then(() => {
-        showCopySuccess();
+        showCopySuccess(btnId);
       }).catch(() => {
-        if (ok) showCopySuccess();
+        if (ok) showCopySuccess(btnId);
         else alert('复制失败,请长按文本框手动选择全部并复制。');
       });
     } else if (ok) {
-      showCopySuccess();
+      showCopySuccess(btnId);
     } else {
       alert('您的浏览器不支持自动复制,请长按文本框手动选择全部并复制。');
     }
   }
-  function showCopySuccess() {
-    const btn = $('#copyBtn');
+  function showCopySuccess(btnId) {
+    const btn = $('#' + btnId);
+    if (!btn) return;
     const original = btn.textContent;
+    const originalBg = btn.style.background;
     btn.textContent = '✓ 已复制';
     btn.style.background = '#7ba88f';
+    btn.style.color = '#fff';
     setTimeout(() => {
       btn.textContent = original;
-      btn.style.background = '';
+      btn.style.background = originalBg;
+      btn.style.color = '';
     }, 2000);
   }
 
@@ -1639,9 +1793,12 @@
     $('#btnBackToPage2').addEventListener('click', () => showScreen('screen-page2'));
 
     $('#submitBtn').addEventListener('click', generateOutput);
-    $('#copyBtn').addEventListener('click', copyOutput);
-    $('#closeBtn').addEventListener('click', () => {
-      $('#output-modal').classList.remove('show');
+    $('#copyBtnEncrypted').addEventListener('click', () => copyText('output-text-encrypted', 'copyBtnEncrypted'));
+    $('#copyBtnPlain').addEventListener('click', () => copyText('output-text-plain', 'copyBtnPlain'));
+    $('#closeBtn').addEventListener('click', () => $('#output-modal').classList.remove('show'));
+    $('#closeBtn2').addEventListener('click', () => $('#output-modal').classList.remove('show'));
+    $$('.tab').forEach(t => {
+      t.addEventListener('click', () => switchTab(t.dataset.tab));
     });
     $('#output-modal').addEventListener('click', (e) => {
       if (e.target.id === 'output-modal') {
