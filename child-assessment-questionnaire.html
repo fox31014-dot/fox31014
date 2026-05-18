@@ -927,23 +927,141 @@
   </div>
 </section>
 
-<!-- ============ 第 13 部分：开放表达 ============ -->
+<!-- ============ 第 13 部分：视角与归因 ============ -->
 <section class="section">
-  <h2>⑬ 您的补充与最关心的问题 <span class="badge">开放</span></h2>
+  <h2>⑬ 视角与归因 <span class="badge">观察者视角</span><span class="priority-tag">关键</span></h2>
+  <p class="why">
+    同样的现象，不同家长会"看到"非常不同的画面。您此刻怎么理解问题、自己最近的状态如何，会显著影响后续建议要从哪里切入、用什么节奏推进。
+    这一节的回答<strong>只用于让分析更贴合您的家庭实际</strong>，没有"对错"答案，请凭直觉作答。
+  </p>
 
   <div class="question">
-    <div class="q-text">13.1 还有什么您觉得很重要但前面问卷没覆盖的信息？</div>
-    <textarea name="q13_1" placeholder="任何细节都可以——可能是您一直觉得"是不是和这个有关"的小事。"></textarea>
+    <div class="q-text">13.1 您认为孩子目前"会做却出错 / 陌生题答非所问"等情况，主要可能与哪些因素相关？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q13_1" value="孩子能力" /><span>孩子自身的性格或能力特点</span></label>
+      <label><input type="checkbox" name="q13_1" value="孩子态度" /><span>孩子的态度 / 学习动力</span></label>
+      <label><input type="checkbox" name="q13_1" value="我的教育方式" /><span>我自己的教育方式或陪伴质量</span></label>
+      <label><input type="checkbox" name="q13_1" value="我的状态" /><span>我自己的情绪或精力状态</span></label>
+      <label><input type="checkbox" name="q13_1" value="配偶" /><span>配偶 / 另一位家长</span></label>
+      <label><input type="checkbox" name="q13_1" value="长辈" /><span>隔代长辈的参与方式</span></label>
+      <label><input type="checkbox" name="q13_1" value="老师学校" /><span>老师或学校</span></label>
+      <label><input type="checkbox" name="q13_1" value="同伴" /><span>同学 / 朋友圈</span></label>
+      <label><input type="checkbox" name="q13_1" value="网络" /><span>网络 / 手机环境</span></label>
+      <label><input type="checkbox" name="q13_1" value="家庭事件" /><span>近期某个家庭事件</span></label>
+      <label><input type="checkbox" name="q13_1" value="还没想清楚" /><span>还没想清楚</span></label>
+    </div>
   </div>
 
   <div class="question">
-    <div class="q-text">13.2 您最希望孩子在 3–6 个月内有哪些具体改变？</div>
-    <textarea name="q13_2" placeholder="例如：减少计算错误一半；阅读理解能独立做对 70% 以上；自己能查作业；情绪更稳定……"></textarea>
+    <div class="q-text">13.2 如果一定要"分一下责任比例"，凭直觉您会怎么分？</div>
+    <div class="q-hint">不必精确，加起来约 100% 即可。如果您觉得不该这样分，也可在下一题说明。</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13.5px;">
+      <label style="display:flex;align-items:center;gap:6px;">
+        孩子自己
+        <input type="number" name="q13_2_child" min="0" max="100" placeholder="%" style="width:80px;" />
+        %
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;">
+        家长（您和配偶）
+        <input type="number" name="q13_2_parent" min="0" max="100" placeholder="%" style="width:80px;" />
+        %
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;">
+        其他因素
+        <input type="number" name="q13_2_other" min="0" max="100" placeholder="%" style="width:80px;" />
+        %
+      </label>
+    </div>
   </div>
 
   <div class="question">
-    <div class="q-text">13.3 您和孩子之前尝试过哪些方法？效果如何？</div>
-    <textarea name="q13_3" placeholder="例如：错题本（坚持了 2 周放弃）、上注意力训练班（无明显效果）、奖励机制（开始有效后失效）……"></textarea>
+    <div class="q-text">13.3 这个判断主要来自？</div>
+    <div class="options">
+      <label><input type="radio" name="q13_3" value="独立观察" /><span>主要是我一个人的观察</span></label>
+      <label><input type="radio" name="q13_3" value="夫妻共识" /><span>和配偶讨论过、看法基本一致</span></label>
+      <label><input type="radio" name="q13_3" value="夫妻分歧" /><span>和配偶讨论过、但看法不同</span></label>
+      <label><input type="radio" name="q13_3" value="配偶或长辈" /><span>主要是配偶 / 长辈的看法</span></label>
+      <label><input type="radio" name="q13_3" value="老师反馈" /><span>主要参考了老师的反馈</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">13.4 如果您和配偶（或共同养育人）对"问题在哪"看法不同，分歧主要在哪里？</div>
+    <textarea name="q13_4" placeholder="例如：配偶认为是孩子懒，我觉得更多是焦虑；或：老人觉得是我管太严……可空着不填。"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">13.5 填写这份问卷的此刻，您的心情更接近？（可多选）</div>
+    <div class="options">
+      <label><input type="checkbox" name="q13_5" value="焦虑" /><span>焦虑 / 担心</span></label>
+      <label><input type="checkbox" name="q13_5" value="内疚" /><span>自责 / 内疚</span></label>
+      <label><input type="checkbox" name="q13_5" value="疲惫" /><span>失望 / 疲惫</span></label>
+      <label><input type="checkbox" name="q13_5" value="愤怒" /><span>愤怒 / 委屈</span></label>
+      <label><input type="checkbox" name="q13_5" value="平静" /><span>平静、想理性分析</span></label>
+      <label><input type="checkbox" name="q13_5" value="希望" /><span>抱有希望</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">13.6 最近 3–6 个月，您自己的状态包括以下哪些？（可多选）</div>
+    <div class="q-hint">家长自己的"承载力"会直接影响调整方案的可执行性。</div>
+    <div class="options">
+      <label><input type="checkbox" name="q13_6" value="睡眠差" /><span>睡眠不太好</span></label>
+      <label><input type="checkbox" name="q13_6" value="工作压力" /><span>工作压力大</span></label>
+      <label><input type="checkbox" name="q13_6" value="情绪起伏" /><span>情绪起伏明显</span></label>
+      <label><input type="checkbox" name="q13_6" value="伴侣关系" /><span>夫妻 / 伴侣关系紧张</span></label>
+      <label><input type="checkbox" name="q13_6" value="经济压力" /><span>经济压力</span></label>
+      <label><input type="checkbox" name="q13_6" value="健康" /><span>有健康问题</span></label>
+      <label><input type="checkbox" name="q13_6" value="个人变化" /><span>自己正面对重要变化（工作变动 / 亲人健康等）</span></label>
+      <label><input type="checkbox" name="q13_6" value="整体良好" /><span>整体还好</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">13.7 当孩子犯错时，您身体最先出现的反应通常是？</div>
+    <div class="options">
+      <label><input type="radio" name="q13_7" value="心跳烦躁" /><span>心跳加快、有点烦躁</span></label>
+      <label><input type="radio" name="q13_7" value="立刻纠正" /><span>很想立刻指出 / 纠正</span></label>
+      <label><input type="radio" name="q13_7" value="叹气无奈" /><span>想叹气 / 觉得无奈</span></label>
+      <label><input type="radio" name="q13_7" value="能停顿" /><span>能先停顿一下，再决定怎么说</span></label>
+      <label><input type="radio" name="q13_7" value="无明显" /><span>没什么特别反应</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">13.8 回想您小时候，父母对待您"犯错"的方式更接近？</div>
+    <div class="options">
+      <label><input type="radio" name="q13_8" value="严厉" /><span>严厉批评 / 惩罚</span></label>
+      <label><input type="radio" name="q13_8" value="讲道理比较" /><span>讲道理 / 拿别人比较</span></label>
+      <label><input type="radio" name="q13_8" value="温和引导" /><span>共同分析、温和引导</span></label>
+      <label><input type="radio" name="q13_8" value="基本不管" /><span>基本不管</span></label>
+      <label><input type="radio" name="q13_8" value="不记得" /><span>不太记得了</span></label>
+    </div>
+  </div>
+
+  <div class="question">
+    <div class="q-text">13.9 您自己年轻时（学生时代或工作初期），是否也有过"会但做错"、"拖延分心"或"完美主义"等类似特点？</div>
+    <textarea name="q13_9" placeholder="可空着不填。这有助于判断哪些是"个人风格"、哪些可能是"环境变量"。"></textarea>
+  </div>
+</section>
+
+<!-- ============ 第 14 部分：开放表达 ============ -->
+<section class="section">
+  <h2>⑭ 您的补充与最关心的问题 <span class="badge">开放</span></h2>
+
+  <div class="question">
+    <div class="q-text">14.1 还有什么您觉得很重要但前面问卷没覆盖的信息？</div>
+    <textarea name="q14_1" placeholder="任何细节都可以——可能是您一直觉得"是不是和这个有关"的小事。"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">14.2 您最希望孩子在 3–6 个月内有哪些具体改变？</div>
+    <textarea name="q14_2" placeholder="例如：减少计算错误一半；阅读理解能独立做对 70% 以上；自己能查作业；情绪更稳定……"></textarea>
+  </div>
+
+  <div class="question">
+    <div class="q-text">14.3 您和孩子之前尝试过哪些方法？效果如何？</div>
+    <textarea name="q14_3" placeholder="例如：错题本（坚持了 2 周放弃）、上注意力训练班（无明显效果）、奖励机制（开始有效后失效）……"></textarea>
   </div>
 </section>
 
@@ -1033,9 +1151,20 @@
     q12_1: "12.1 早期发育特点",
     q12_2: "12.2 老师早年反馈",
     q12_3: "12.3 家族相关史",
-    q13_1: "13.1 补充信息",
-    q13_2: "13.2 期望改变",
-    q13_3: "13.3 已尝试过的方法"
+    q13_1: "13.1 您认为问题主要相关因素",
+    q13_2_child: "13.2 责任比例·孩子(%)",
+    q13_2_parent: "13.2 责任比例·家长(%)",
+    q13_2_other: "13.2 责任比例·其他(%)",
+    q13_3: "13.3 判断主要来源",
+    q13_4: "13.4 与配偶的分歧",
+    q13_5: "13.5 此刻心情",
+    q13_6: "13.6 近3-6月自身状态",
+    q13_7: "13.7 孩子犯错时您的最先反应",
+    q13_8: "13.8 您小时候被对待的方式",
+    q13_9: "13.9 您年轻时的相似特点",
+    q14_1: "14.1 补充信息",
+    q14_2: "14.2 期望改变",
+    q14_3: "14.3 已尝试过的方法"
   };
 
   function collectAnswers() {
@@ -1073,7 +1202,8 @@
       "10": "⑩ 学习场景具体观察",
       "11": "⑪ 兴趣、性格与社交",
       "12": "⑫ 早期发育简史",
-      "13": "⑬ 补充与期望"
+      "13": "⑬ 视角与归因（填卷人）",
+      "14": "⑭ 补充与期望"
     };
     for (const key of Object.keys(questionTitles)) {
       const sec = key.match(/^q(\d+)_/)[1];
