@@ -663,6 +663,121 @@
     line-height: 1.95;
   }
 
+  /* ========== Letter Mode (信纸感 + 段落呼吸式淡入 + 用户原话高亮) ========== */
+  .reply-card.letter-mode {
+    position: relative;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 27px,
+        rgba(139, 111, 184, 0.035) 27px,
+        rgba(139, 111, 184, 0.035) 28px
+      ),
+      linear-gradient(135deg, #fdfaf4 0%, #f5e8f3 100%);
+    border: 1px solid #ede1f0;
+    box-shadow:
+      0 8px 28px rgba(139, 111, 184, 0.14),
+      0 1px 0 rgba(255, 255, 255, 0.7) inset;
+  }
+  .reply-card.letter-mode::before {
+    content: "";
+    position: absolute;
+    left: 30px;
+    right: 30px;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(216, 197, 214, 0.85) 30%,
+      rgba(216, 197, 214, 0.85) 70%,
+      transparent 100%);
+    border-radius: 2px;
+  }
+  .reply-header .reply-controls {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+  }
+  .reply-control-btn {
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid #e0d4e6;
+    color: #6b528b;
+    font-size: 12px;
+    padding: 4px 11px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s ease;
+    line-height: 1.4;
+  }
+  .reply-control-btn:hover {
+    background: #fff;
+    border-color: #6b528b;
+  }
+  .reply-control-btn.is-off {
+    color: #b6a7c4;
+    border-color: #ece2ef;
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  /* 段落:默认可见。仅在动画进行时由 .animating 控制初始隐藏 */
+  .reply-paragraph {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 750ms ease, transform 750ms ease;
+    margin: 0 0 14px;
+  }
+  .reply-paragraph:last-child { margin-bottom: 0; }
+  .reply-card.letter-mode.animating .reply-paragraph {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  .reply-card.letter-mode.animating .reply-paragraph.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 用户原话高亮:整段淡入完成后,这一句轻微"被点亮",再缓慢淡回 */
+  .reply-quote {
+    position: relative;
+    display: inline;
+    padding: 1px 3px;
+    border-radius: 3px;
+    background: transparent;
+    box-shadow: 0 0 0 0 rgba(232, 168, 124, 0);
+    transition: background-color 800ms ease, box-shadow 800ms ease;
+  }
+  .reply-quote.flash {
+    background: rgba(232, 168, 124, 0.32);
+    box-shadow: 0 0 0 3px rgba(232, 168, 124, 0.18);
+  }
+  .reply-quote-mark {
+    display: inline-block;
+    font-size: 11.5px;
+    color: #b87a4a;
+    margin-left: 6px;
+    opacity: 0;
+    transform: translateX(-2px);
+    transition: opacity 700ms ease, transform 700ms ease;
+    font-weight: normal;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+  }
+  .reply-quote.flash .reply-quote-mark {
+    opacity: 0.78;
+    transform: translateX(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reply-card.letter-mode.animating .reply-paragraph {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+    .reply-quote { transition: none !important; }
+  }
+
   /* ========== Next Actions (出口选项) ========== */
   .next-actions {
     margin-top: 26px;
@@ -873,10 +988,14 @@
 
     <!-- Quick Result: 即时回应 -->
     <div class="quick-step" id="quick-step-result">
-      <div class="reply-card">
+      <div class="reply-card letter-mode" id="quick-reply-card">
         <div class="reply-header">
           <span class="reply-icon">💜</span>
           <span class="reply-title">这是我读完您写的之后,想跟您说的话</span>
+          <div class="reply-controls">
+            <button type="button" class="reply-control-btn" data-role="sound-toggle" aria-label="信纸声音开关">🔇 声音</button>
+            <button type="button" class="reply-control-btn" data-role="skip-anim" aria-label="直接显示全文">直接看完</button>
+          </div>
         </div>
         <div class="reply-body" id="quick-reply-body">
           <!-- Filled by JS -->
@@ -1485,10 +1604,14 @@
     <h3>谢谢您。我已经认真读完了。</h3>
 
     <!-- 即时回信卡片 -->
-    <div class="reply-card">
+    <div class="reply-card letter-mode" id="modal-reply-card">
       <div class="reply-header">
         <span class="reply-icon">💜</span>
         <span class="reply-title">这是我读完您写的之后,想跟您说的话</span>
+        <div class="reply-controls">
+          <button type="button" class="reply-control-btn" data-role="sound-toggle" aria-label="信纸声音开关">🔇 声音</button>
+          <button type="button" class="reply-control-btn" data-role="skip-anim" aria-label="直接显示全文">直接看完</button>
+        </div>
       </div>
       <div class="reply-body" id="modal-reply-body">
         <!-- Filled by JS -->
@@ -1971,6 +2094,8 @@
     '</div>';
 
   // ====== 渲染回信(把模板填入插槽,转 HTML) ======
+  // 返回的 HTML 把每个段落包成 <p class="reply-paragraph">,
+  // 并把"{q1b}"那一句包成 <span class="reply-quote">,供动画与高亮使用。
   function renderReply(emotionKey, q1bText, endingKey, crisis) {
     let tpl;
     if (emotionKey === 'OTHER' || !EMOTION_REPLIES[emotionKey]) {
@@ -1980,7 +2105,12 @@
     }
     const safeQ1b = (q1bText && q1bText.trim()) ? q1bText.trim() : '您写下的那段话';
 
-    let body = tpl.replace(/\{q1b\}/g, safeQ1b);
+    // 用一个不会被用户输入或模板触达的占位符,替换 {q1b}。
+    // 之后做 HTML 转义,再把占位符换成带 reply-quote 的 span。
+    const QUOTE_OPEN  = '\u0001QUOTE_OPEN\u0001';
+    const QUOTE_CLOSE = '\u0001QUOTE_CLOSE\u0001';
+
+    let body = tpl.replace(/\{q1b\}/g, QUOTE_OPEN + safeQ1b + QUOTE_CLOSE);
 
     if (endingKey && QUICK_ENDINGS[endingKey]) {
       body += QUICK_ENDINGS[endingKey];
@@ -1988,21 +2118,233 @@
       body += DEEP_ENDING;
     }
 
-    // 危机模式:把危机模板拼在最前面
+    // 危机模式:把危机模板拼在最前面,并保证危机段独立成段(它内部已含 \n\n)
     if (crisis) {
       body = CRISIS_REPLY + body;
     }
 
-    // 转 HTML:换行->br, **粗体**->strong, <RESOURCE_BLOCK> 替换
-    let html = body
+    // 1) HTML 转义
+    let escaped = body
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
-    // 注意:转义后再做 marker 替换
-    html = html.replace(/&lt;RESOURCE_BLOCK&gt;/g, RESOURCE_BLOCK_HTML);
-    html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/\n/g, '<br>');
+
+    // 2) 用 \n\n 切段(模板里段落都是用空行分隔的)
+    const paragraphs = escaped.split(/\n{2,}/);
+
+    // 3) 每段内部:**...** -> <strong>,单 \n -> <br>,RESOURCE_BLOCK 替换,
+    //    QUOTE 占位符 -> <span class="reply-quote">...<small class="reply-quote-mark">← 这是您写的</small></span>
+    const html = paragraphs.map(p => {
+      let s = p;
+      s = s.replace(/&lt;RESOURCE_BLOCK&gt;/g, RESOURCE_BLOCK_HTML);
+      s = s.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+      s = s.replace(/\n/g, '<br>');
+      s = s.replace(
+        new RegExp(QUOTE_OPEN + '([\\s\\S]*?)' + QUOTE_CLOSE, 'g'),
+        '<span class="reply-quote">$1<span class="reply-quote-mark">← 这是您写的</span></span>'
+      );
+      // 资源块本身已经是 <div>,如果整段就是它,不要再包 <p>
+      const trimmed = s.trim();
+      if (!trimmed) return '';
+      if (/^<div class="resource-block"/.test(trimmed)) {
+        return trimmed;
+      }
+      return '<p class="reply-paragraph">' + s + '</p>';
+    }).filter(Boolean).join('');
+
     return html;
+  }
+
+  // ============================================================
+  // ====== 信纸动画 + 极轻纸张声 (Letter Mode) ======
+  // ============================================================
+
+  // 用户偏好:信纸声音是否开启。默认关闭(尊重静音环境)。
+  let letterSoundEnabled = false;
+  // 当前正在播放的动画句柄,便于"直接看完"中断
+  let activeLetterAnim = null;
+
+  // 极轻的"翻信纸/落笔"声 —— 用 WebAudio 合成,无外部依赖、不打扰
+  let _audioCtx = null;
+  function getAudioCtx() {
+    if (_audioCtx) return _audioCtx;
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    try { _audioCtx = new Ctx(); } catch (e) { return null; }
+    return _audioCtx;
+  }
+  // 一次"沙"声:短促的滤波白噪声(~140ms),音量极低
+  function playPaperRustle() {
+    if (!letterSoundEnabled) return;
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    try {
+      if (ctx.state === 'suspended') ctx.resume();
+      const duration = 0.14;
+      const sampleRate = ctx.sampleRate;
+      const frameCount = Math.floor(sampleRate * duration);
+      const buffer = ctx.createBuffer(1, frameCount, sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < frameCount; i++) {
+        // 衰减形包络的白噪声
+        const t = i / frameCount;
+        const env = Math.pow(1 - t, 2.2);
+        data[i] = (Math.random() * 2 - 1) * env;
+      }
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+      // 高通 + 带通让它更像"纸"的高频沙沙,不像"风"
+      const hp = ctx.createBiquadFilter();
+      hp.type = 'highpass'; hp.frequency.value = 1800;
+      const bp = ctx.createBiquadFilter();
+      bp.type = 'bandpass'; bp.frequency.value = 4200; bp.Q.value = 0.7;
+      const gain = ctx.createGain();
+      gain.gain.value = 0.045; // 非常轻
+      src.connect(hp); hp.connect(bp); bp.connect(gain); gain.connect(ctx.destination);
+      src.start();
+      src.stop(ctx.currentTime + duration + 0.02);
+    } catch (e) { /* 静默失败 */ }
+  }
+
+  // 把一个 .reply-body 容器内的段落按节奏依次显现
+  // - 第一段:慢呈现,完成后触发 q1b 高亮
+  // - 后续段:呼吸式淡入
+  // - 危机/资源块永远立即显示(不参与延迟)
+  // 返回一个对象:{ skip(): 立即显示全部 }
+  function playLetterAnimation(card) {
+    if (!card) return { skip: function(){} };
+    const reduceMotion = window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const paragraphs = Array.from(card.querySelectorAll('.reply-paragraph'));
+    // 资源块在 DOM 里位于段落之间,但它不是 .reply-paragraph,默认就可见。
+
+    // 危机模式下:整封信跳过动画,立即全部显示(资源必须立刻可见)
+    const isCrisis = card.classList.contains('crisis-now');
+    if (reduceMotion || isCrisis || paragraphs.length === 0) {
+      card.classList.remove('animating');
+      paragraphs.forEach(p => p.classList.add('revealed'));
+      return { skip: function(){} };
+    }
+
+    // 进入动画态:先把段落都隐起来
+    card.classList.add('animating');
+    paragraphs.forEach(p => p.classList.remove('revealed'));
+
+    let cancelled = false;
+    const timers = [];
+    const setT = (fn, ms) => { const id = setTimeout(fn, ms); timers.push(id); return id; };
+
+    function revealAll() {
+      timers.forEach(clearTimeout);
+      timers.length = 0;
+      paragraphs.forEach(p => p.classList.add('revealed'));
+      // 也把高亮直接落到稳定态(不再 flash)
+      card.classList.remove('animating');
+    }
+
+    // 节奏参数(总时长约 6–9 秒)
+    const FIRST_DELAY  = 350;   // 进入卡片后的小停顿
+    const FIRST_LINGER = 1100;  // 第一段显示完到第二段开始之间的停顿
+    const STEP_GAP     = 850;   // 后续段落之间的间隔
+    const QUOTE_FLASH_AT = 600; // 第一段开始动画后多久"点亮"用户原话
+
+    // 第一段
+    setT(() => {
+      if (cancelled) return;
+      playPaperRustle();
+      paragraphs[0].classList.add('revealed');
+      // 第一段中如果含用户原话,稍后让它"被听见"
+      const quote = paragraphs[0].querySelector('.reply-quote');
+      if (quote) {
+        setT(() => {
+          if (cancelled) return;
+          quote.classList.add('flash');
+          // 2.4 秒后让高亮缓慢淡回(留下边注小字保持可见)
+          setT(() => {
+            if (cancelled) return;
+            quote.classList.remove('flash');
+            // 让边注小字保留可见(给它一个稳态类)
+            const mark = quote.querySelector('.reply-quote-mark');
+            if (mark) {
+              mark.style.opacity = '0.55';
+              mark.style.transform = 'translateX(0)';
+            }
+          }, 2400);
+        }, QUOTE_FLASH_AT);
+      }
+    }, FIRST_DELAY);
+
+    // 后续段落
+    let cursor = FIRST_DELAY + FIRST_LINGER + 700; // 第一段动画自身约 750ms,留点余量
+    for (let i = 1; i < paragraphs.length; i++) {
+      const idx = i;
+      setT(() => {
+        if (cancelled) return;
+        playPaperRustle();
+        paragraphs[idx].classList.add('revealed');
+      }, cursor);
+      cursor += STEP_GAP;
+    }
+    // 最后留一点时间让最后一段过渡完成,然后清掉 animating 类(无副作用)
+    setT(() => {
+      if (cancelled) return;
+      card.classList.remove('animating');
+    }, cursor + 800);
+
+    return {
+      skip: function() {
+        cancelled = true;
+        revealAll();
+      }
+    };
+  }
+
+  // 启动一次回信动画;同时绑定/刷新该卡片上的"直接看完""声音"按钮
+  function startLetterFor(card) {
+    if (!card) return;
+    // 中断上一次未结束的动画
+    if (activeLetterAnim && typeof activeLetterAnim.skip === 'function') {
+      activeLetterAnim.skip();
+    }
+    activeLetterAnim = playLetterAnimation(card);
+    syncLetterControls(card);
+  }
+
+  function syncLetterControls(card) {
+    if (!card) return;
+    const skipBtn = card.querySelector('[data-role="skip-anim"]');
+    if (skipBtn && !skipBtn._bound) {
+      skipBtn.addEventListener('click', () => {
+        if (activeLetterAnim && typeof activeLetterAnim.skip === 'function') {
+          activeLetterAnim.skip();
+        }
+      });
+      skipBtn._bound = true;
+    }
+    const soundBtn = card.querySelector('[data-role="sound-toggle"]');
+    if (soundBtn) {
+      const renderSoundLabel = () => {
+        soundBtn.textContent = letterSoundEnabled ? '🔈 声音' : '🔇 声音';
+        soundBtn.classList.toggle('is-off', !letterSoundEnabled);
+      };
+      renderSoundLabel();
+      if (!soundBtn._bound) {
+        soundBtn.addEventListener('click', () => {
+          letterSoundEnabled = !letterSoundEnabled;
+          if (letterSoundEnabled) {
+            // 用户首次开启:试播一声,确保 AudioContext 解锁
+            playPaperRustle();
+          }
+          // 同步另一张卡片上的按钮(两张卡片共享状态)
+          document.querySelectorAll('[data-role="sound-toggle"]').forEach(b => {
+            b.textContent = letterSoundEnabled ? '🔈 声音' : '🔇 声音';
+            b.classList.toggle('is-off', !letterSoundEnabled);
+          });
+        });
+        soundBtn._bound = true;
+      }
+    }
   }
 
   // ============================================================
@@ -2045,6 +2387,13 @@
     );
     document.getElementById('quick-reply-body').innerHTML = html;
     showQuickStep('quick-step-result');
+    // 启动信纸动画(段落呼吸式淡入 + 用户原话高亮)
+    const card = document.getElementById('quick-reply-card');
+    if (card) {
+      card.classList.remove('crisis-now'); // 快速版无 crisis
+      // 等下一帧再启动,确保元素已 visible,过渡能生效
+      requestAnimationFrame(() => startLetterFor(card));
+    }
   }
 
   // 把快速版数据迁移到完整版(填入对应表单字段)
@@ -2275,6 +2624,12 @@
     const replyHtml = renderReply(emotionKey, q1bVal, 'deep', crisisFlag);
     $('#modal-reply-body').innerHTML = replyHtml;
 
+    // 信纸动画:危机模式下跳过(资源必须立刻可见)
+    const modalCard = $('#modal-reply-card');
+    if (modalCard) {
+      modalCard.classList.toggle('crisis-now', !!crisisFlag);
+    }
+
     // 重置编码内容为折叠状态(每次提交都是新的)
     $('#encrypted-content').classList.remove('show');
 
@@ -2282,6 +2637,11 @@
     switchTab('encrypted');
 
     $('#output-modal').classList.add('show');
+
+    // 等 modal 显现后再启动动画
+    if (modalCard) {
+      requestAnimationFrame(() => startLetterFor(modalCard));
+    }
   }
 
   // ====== Tab switching ======
@@ -2416,14 +2776,19 @@
       }
     });
     $('#btnDeepResources').addEventListener('click', () => {
-      // 把回信区替换为资源页
+      // 把回信区替换为资源页 —— 立即显示,不走信纸动画
+      if (activeLetterAnim && typeof activeLetterAnim.skip === 'function') {
+        activeLetterAnim.skip();
+      }
+      const card = $('#modal-reply-card');
+      if (card) card.classList.remove('animating');
       const body = $('#modal-reply-body');
       body.innerHTML =
-        '<strong>这里是我们能想到的、最有用的几条专业资源。</strong><br><br>' +
+        '<p class="reply-paragraph revealed"><strong>这里是我们能想到的、最有用的几条专业资源。</strong></p>' +
         RESOURCE_BLOCK_HTML +
-        '<br>这些机构都接受电话咨询,部分提供线上服务。' +
-        '<br>如您身边有信任的人,告诉他/她您正在做这件事,会让这一步更有力量。' +
-        '<br><br><strong>您不需要独自面对这件事。</strong>';
+        '<p class="reply-paragraph revealed">这些机构都接受电话咨询,部分提供线上服务。</p>' +
+        '<p class="reply-paragraph revealed">如您身边有信任的人,告诉他/她您正在做这件事,会让这一步更有力量。</p>' +
+        '<p class="reply-paragraph revealed"><strong>您不需要独自面对这件事。</strong></p>';
     });
 
     $$('.tab').forEach(t => {
