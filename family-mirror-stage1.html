@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>家的镜子 · 第一次照面</title>
+<style>
+  :root {
+    --primary: #6b7fdc;
+    --primary-dark: #4a5fb8;
+    --accent: #e8a87c;
+    --warm: #f5e6d8;
+    --bg: #faf7f2;
+    --card: #ffffff;
+    --text: #2d3142;
+    --muted: #7c8190;
+    --border: #e8e3db;
+    --success: #7ba88f;
+    --warning: #d97757;
+    --soft-purple: #c8a4c4;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Microsoft YaHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px 12px 100px;
+    line-height: 1.7;
+  }
+  .container { max-width: 760px; margin: 0 auto; }
+
+  /* ========== Page Switcher ========== */
+  .screen { display: none; animation: fadeIn 0.4s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== Hero ========== */
+  header {
+    background: linear-gradient(135deg, #6b7fdc 0%, #8b6fb8 60%, #c8a4c4 100%);
+    color: #fff;
+    padding: 38px 30px;
+    border-radius: 16px;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 28px rgba(107, 127, 220, 0.25);
+  }
+  header h1 {
+    margin: 0 0 12px;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  header .subtitle {
+    margin: 0 0 18px;
+    opacity: 0.92;
+    font-size: 15px;
+    font-weight: 300;
+  }
+  .promise {
+    background: rgba(255, 255, 255, 0.16);
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.85;
+  }
+  .promise .item { display: block; margin: 4px 0; }
+  .promise .check {
+    display: inline-block;
+    width: 18px;
+    color: #ffd9a8;
+    font-weight: 700;
+  }
+
+  /* ========== Welcome Screen (entry triage) ========== */
+  .welcome-card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 32px 28px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    text-align: center;
+  }
+  .welcome-card h2 {
+    margin: 0 0 12px;
+    font-size: 20px;
+    color: var(--primary-dark);
+  }
+  .welcome-card p {
+    color: var(--muted);
+    font-size: 14.5px;
+    margin: 0 0 22px;
+  }
+  .triage-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+  }
+  .triage-card {
+    padding: 18px 20px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #faf7f2;
+  }
+  .triage-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(107, 127, 220, 0.15);
+  }
+  .triage-card .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .triage-card.red .dot { background: #d97757; }
+  .triage-card.yellow .dot { background: #e8a87c; }
+  .triage-card.green .dot { background: #7ba88f; }
+  .triage-card .title {
+    font-weight: 600;
+    font-size: 15.5px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .triage-card .desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ========== Warmup Screen ========== */
+  .warmup-card {
+    background: linear-gradient(135deg, #fdfaf4 0%, #f8efe2 100%);
+    border-radius: 16px;
+    padding: 36px 32px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    border: 1px solid var(--warm);
+  }
+  .warmup-card h2 {
+    margin: 0 0 18px;
+    font-size: 22px;
+    color: var(--primary-dark);
+    font-weight: 500;
+  }
+  .warmup-card .breath {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 2;
+    margin: 0 auto 24px;
+    max-width: 500px;
+  }
+  .warmup-card .breath em {
+    color: var(--accent);
+    font-style: normal;
+    font-weight: 600;
+  }
+  .warmup-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  /* ========== Sections ========== */
+  .section {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    border-left: 4px solid var(--primary);
+  }
+  .section h2 {
+    margin: 0 0 6px;
+    font-size: 19px;
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section .badge {
+    background: var(--primary);
+    color: #fff;
+    font-size: 12px;
+    padding: 3px 11px;
+    border-radius: 12px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+  }
+  .section .why {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin: 0 0 22px;
+    background: #faf6ee;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent);
+    line-height: 1.7;
+  }
+  .section.deep { border-left-color: var(--accent); }
+  .section.deep h2 { color: #b06a3d; }
+  .section.deep .badge { background: var(--accent); }
+  .section.intro { border-left-color: var(--soft-purple); }
+  .section.intro h2 { color: #8b6fb8; }
+  .section.intro .badge { background: var(--soft-purple); }
+
+  /* ========== Question ========== */
+  .question {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--border);
+  }
+  .question:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .q-text {
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .q-num {
+    color: var(--primary);
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .q-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 4px 0 10px;
+    font-style: italic;
+    line-height: 1.7;
+  }
+  .required-mark {
+    color: var(--warning);
+    font-size: 12px;
+    margin-left: 4px;
+  }
+  .optional-mark {
+    color: var(--muted);
+    font-size: 12px;
+    margin-left: 4px;
+    font-weight: normal;
+  }
+
+  /* ========== Options ========== */
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .options.vertical { flex-direction: column; gap: 6px; }
+  .options label {
+    background: #f4f1ec;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    border: 1.5px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+    line-height: 1.5;
+  }
+  .options.vertical label {
+    border-radius: 8px;
+    text-align: left;
+  }
+  .options label:hover { background: #ebe6dd; }
+  .options input[type="radio"],
+  .options input[type="checkbox"] {
+    display: none;
+  }
+  .options label:has(input:checked) {
+    background: #e6e9f8;
+    border-color: var(--primary);
+    color: var(--primary-dark);
+    font-weight: 600;
+  }
+  .options label.warn:has(input:checked) {
+    background: #fbe8df;
+    border-color: var(--warning);
+    color: var(--warning);
+  }
+  .other-input {
+    margin-top: 8px;
+    display: none;
+  }
+  .other-input.show { display: block; }
+
+  /* ========== Inputs ========== */
+  textarea, input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 14.5px;
+    font-family: inherit;
+    resize: vertical;
+    background: #fafbfd;
+    line-height: 1.6;
+  }
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(107, 127, 220, 0.1);
+  }
+  textarea { min-height: 80px; }
+  textarea.short { min-height: 50px; }
+
+  /* ========== Scale ========== */
+  .scale {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    align-items: center;
+  }
+  .scale-label {
+    font-size: 12px;
+    color: var(--muted);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .scale label {
+    flex: 1;
+    min-width: 36px;
+    text-align: center;
+    background: #f4f1ec;
+    padding: 8px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13.5px;
+    font-weight: 600;
+    border: 1.5px solid transparent;
+    transition: all 0.15s;
+  }
+  .scale label:hover { background: #ebe6dd; }
+  .scale label:has(input:checked) {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary-dark);
+  }
+
+  /* ========== AI Reflection Bubbles ========== */
+  .ai-bubble {
+    display: none;
+    background: linear-gradient(135deg, #f0eafc 0%, #e8e9f8 100%);
+    border-radius: 14px 14px 14px 4px;
+    padding: 14px 18px;
+    margin: 12px 0 4px;
+    font-size: 14px;
+    line-height: 1.75;
+    color: #5a4d7a;
+    border-left: 3px solid var(--soft-purple);
+    position: relative;
+    animation: bubbleIn 0.5s ease;
+  }
+  .ai-bubble.show { display: block; }
+  .ai-bubble::before {
+    content: "💜";
+    margin-right: 6px;
+  }
+  @keyframes bubbleIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== Toolbar / Buttons ========== */
+  .toolbar {
+    position: sticky;
+    bottom: 14px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    padding: 14px;
+    border-radius: 12px;
+    box-shadow: 0 -2px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 28px;
+    border: 1px solid var(--border);
+  }
+  button {
+    padding: 12px 26px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14.5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.1s, box-shadow 0.15s, background 0.2s;
+    font-family: inherit;
+  }
+  button:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.12); }
+  button:active { transform: translateY(0); }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover { background: var(--primary-dark); }
+  .btn-secondary { background: #fff; color: var(--primary-dark); border: 1.5px solid var(--primary); }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-large {
+    padding: 14px 38px;
+    font-size: 15.5px;
+  }
+
+  /* ========== Progress ========== */
+  .progress {
+    position: sticky;
+    top: 0;
+    background: rgba(250, 247, 242, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 8px 0;
+    z-index: 10;
+    margin: 0 -12px 14px;
+    display: none;
+  }
+  .progress.show { display: block; }
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    width: 0%;
+    transition: width 0.3s;
+  }
+  .progress-text {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ========== Page Step ========== */
+  .step-info {
+    text-align: center;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .step-info strong { color: var(--primary-dark); }
+
+  .between-page-card {
+    background: linear-gradient(135deg, #fdfaf4 0%, #f3ebde 100%);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 16px;
+    text-align: center;
+    color: #8b6f4a;
+    font-size: 14.5px;
+    line-height: 1.85;
+    border: 1px solid var(--warm);
+  }
+  .between-page-card .icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  /* ========== Modal ========== */
+  #output-modal, #self-talk-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(45, 49, 66, 0.55);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #output-modal.show, #self-talk-modal.show { display: flex; }
+  .modal-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 26px;
+    max-width: 720px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  }
+  .modal-box h3 {
+    margin: 0 0 8px;
+    color: var(--primary-dark);
+    font-size: 19px;
+  }
+  .modal-tip {
+    background: #faf6ee;
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 14px 0;
+    font-size: 13.5px;
+    color: #8c6442;
+    line-height: 1.7;
+  }
+  #output-text, #output-text-plain, #output-text-encrypted {
+    width: 100%;
+    min-height: 320px;
+    max-height: 50vh;
+    padding: 14px;
+    background: #faf7f2;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: ui-monospace, "SF Mono", Monaco, "Cascadia Code", monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  #output-text-encrypted {
+    font-size: 11.5px;
+    color: #555;
+    background: #f3eef5;
+  }
+  .modal-toolbar {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ========== Tabs in Modal ========== */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin: 14px 0 0;
+    border-bottom: 1.5px solid var(--border);
+  }
+  .tab {
+    padding: 10px 18px;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    margin-bottom: -1.5px;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .tab:hover { color: var(--primary-dark); transform: none; box-shadow: none; }
+  .tab.active {
+    color: var(--primary-dark);
+    border-bottom-color: var(--primary);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  .tab-tip {
+    background: #f0eafc;
+    border-left: 3px solid var(--soft-purple);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 14px 0;
+    font-size: 13px;
+    color: #5a4d7a;
+    line-height: 1.7;
+  }
+  .tab-tip strong { color: #4a3d6a; }
+  .tab-tip code {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  /* ========== Footer ========== */
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 30px;
+    padding: 0 20px;
+    line-height: 1.8;
+  }
+
+  /* Validation */
+  .question.error .q-text { color: var(--warning); }
+  .question.error textarea,
+  .question.error input[type="text"] {
+    border-color: var(--warning);
+    background: #fef5f1;
+  }
+
+  /* Crisis warning */
+  .crisis-banner {
+    display: none;
+    background: linear-gradient(135deg, #fbe8df 0%, #f5d4c5 100%);
+    border: 1.5px solid var(--warning);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 16px 0;
+    color: #8c3a1a;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+  .crisis-banner.show { display: block; }
+  .crisis-banner strong { color: var(--warning); }
+
+  /* ========== Quick Path Steps ========== */
+  .quick-step { display: none; }
+  .quick-step.active { display: block; animation: fadeIn 0.4s ease; }
+
+  /* ========== AI Reply Card (出口/快速版) ========== */
+  .reply-card {
+    background: linear-gradient(135deg, #fdfaf4 0%, #f5e8f3 100%);
+    border-radius: 16px;
+    padding: 28px 26px;
+    margin: 18px 0;
+    box-shadow: 0 6px 24px rgba(139, 111, 184, 0.12);
+    border: 1px solid #ede1f0;
+  }
+  .reply-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed #e0d4e6;
+  }
+  .reply-icon { font-size: 22px; }
+  .reply-title {
+    color: #6b528b;
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+  .reply-body {
+    font-size: 15.5px;
+    line-height: 2;
+    color: #3d3447;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .reply-body strong {
+    color: var(--primary-dark);
+  }
+  .reply-body .resource-block {
+    background: rgba(255, 255, 255, 0.55);
+    border-left: 3px solid var(--warning);
+    padding: 12px 16px;
+    margin: 14px 0;
+    border-radius: 8px;
+    font-size: 14.5px;
+    line-height: 1.95;
+  }
+
+  /* ========== Next Actions (出口选项) ========== */
+  .next-actions {
+    margin-top: 26px;
+    padding: 20px 4px;
+  }
+  .next-actions h3 {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 500;
+    margin: 0 0 14px;
+    text-align: center;
+  }
+  .next-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: inherit;
+    color: var(--text);
+  }
+  .next-btn:hover {
+    border-color: var(--primary);
+    background: #f8f5fc;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(107, 127, 220, 0.12);
+  }
+  .next-btn strong {
+    display: block;
+    font-size: 15.5px;
+    color: var(--primary-dark);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+  .next-btn span {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .next-btn.secondary strong { color: #6b6f8b; }
+  .next-btn.warn strong { color: var(--warning); }
+  .next-btn.warn:hover { border-color: var(--warning); background: #fff5f0; }
+
+  /* ========== Encrypted Reveal Toggle ========== */
+  .encrypted-toggle {
+    background: transparent;
+    border: 1.5px dashed var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13.5px;
+    font-family: inherit;
+    margin-top: 10px;
+    transition: all 0.15s;
+  }
+  .encrypted-toggle:hover {
+    border-color: var(--primary);
+    color: var(--primary-dark);
+  }
+  .encrypted-content { display: none; margin-top: 14px; }
+  .encrypted-content.show { display: block; }
+
+
+    body { padding: 16px 8px 100px; }
+    header { padding: 28px 22px; }
+    header h1 { font-size: 22px; }
+    .section { padding: 22px 20px; }
+    .section h2 { font-size: 17px; }
+    .modal-box { padding: 20px; }
+    .warmup-card { padding: 28px 22px; }
+    .welcome-card { padding: 26px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ========================================== -->
+  <!-- SCREEN 0: Welcome / Triage                  -->
+  <!-- ========================================== -->
+  <section class="screen active" id="screen-welcome">
+    <header>
+      <h1>家的镜子 · 第一次照面</h1>
+      <p class="subtitle">陪您一起,看清家里发生了什么</p>
+      <div class="promise">
+        <span class="item"><span class="check">✓</span>我们不诊断孩子,不贴标签</span>
+        <span class="item"><span class="check">✓</span>您可以慢慢答、跳过答、随时停下来</span>
+        <span class="item"><span class="check">✓</span>一个孩子的状态,往往是整个家的体温计</span>
+      </div>
+    </header>
+
+    <div class="welcome-card">
+      <h2>请先选一个,您此刻最贴近的状态</h2>
+      <p>不同状态的家长,我们会用不同的方式陪您。</p>
+      <div class="triage-options">
+        <div class="triage-card red" data-triage="urgent">
+          <div class="title"><span class="dot"></span>我现在很急,想立刻被听见</div>
+          <div class="desc">3 题极简版 · 约 90 秒 · 立即得到一段属于您的回应</div>
+        </div>
+        <div class="triage-card yellow" data-triage="full">
+          <div class="title"><span class="dot"></span>我想认真聊一下,愿意花十几分钟</div>
+          <div class="desc">完整版 28 题 · 约 15 分钟 · 获得一份可发给咨询师的深度记录</div>
+        </div>
+        <div class="triage-card green" data-triage="browse">
+          <div class="title"><span class="dot"></span>我先随便看看,不想现在填问卷</div>
+          <div class="desc">看一篇免费的「3 分钟看懂青春期家长常见误区」</div>
+        </div>
+      </div>
+    </div>
+
+    <p class="footer-note">
+      您的回答仅会显示在本页面,不会自动上传。<br>
+      <span style="color: var(--warning);">本服务为家庭教育咨询,不构成医疗诊断。如遇紧急情况请拨打 400-161-9995。</span>
+    </p>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 1: Warmup (Breath)                   -->
+  <!-- ========================================== -->
+  <section class="screen" id="screen-warmup">
+    <div class="warmup-card">
+      <h2>我们慢一点,准备好了再开始</h2>
+      <p class="breath">
+        接下来的问题,<br>
+        <em>不是考试,不是评判,也不是诊断。</em><br><br>
+        您可以慢慢答、跳过答、<br>
+        反复改、或者随时关掉去喝口水。<br><br>
+        如果某道题让您有情绪,<br>
+        <em>这本身就是答案。</em><br>
+        请允许自己停下来。
+      </p>
+      <div class="warmup-actions">
+        <button class="btn-primary btn-large" id="btnStartFromWarmup">我准备好了,开始</button>
+        <button class="btn-secondary" id="btnSkipWarmup">直接开始,跳过这段</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 1.5: Quick Path (90s, 3 screens)    -->
+  <!-- ========================================== -->
+  <section class="screen" id="screen-quick">
+    <div class="step-info">极简版 · <strong>约 90 秒</strong> · 让您先被听见</div>
+
+    <!-- Quick Step 1: 情绪词 -->
+    <div class="quick-step active" id="quick-step-1">
+      <div class="section">
+        <h2>此刻您是什么感觉? <span class="badge">1 / 3</span></h2>
+        <p class="why">凭直觉选,选不到完全准确的也没关系。选完就会自动到下一步。</p>
+        <div class="options" data-name="quick-q1a">
+          <label><input type="radio" name="quick-q1a" value="焦虑"><span>焦虑</span></label>
+          <label><input type="radio" name="quick-q1a" value="难过"><span>难过</span></label>
+          <label><input type="radio" name="quick-q1a" value="无力"><span>无力</span></label>
+          <label><input type="radio" name="quick-q1a" value="生气"><span>生气</span></label>
+          <label><input type="radio" name="quick-q1a" value="困惑"><span>困惑</span></label>
+          <label><input type="radio" name="quick-q1a" value="担心"><span>担心</span></label>
+          <label><input type="radio" name="quick-q1a" value="麻木"><span>麻木</span></label>
+          <label><input type="radio" name="quick-q1a" value="自责"><span>自责</span></label>
+          <label><input type="radio" name="quick-q1a" value="还好"><span>还好</span></label>
+        </div>
+        <div class="other-input show" style="margin-top:14px;">
+          <input type="text" id="quick-q1a-other" placeholder="(可选) 用您自己的词形容..." />
+        </div>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn-secondary" id="btnQuickBack1">回首页</button>
+      </div>
+    </div>
+
+    <!-- Quick Step 2: 一句话主诉 -->
+    <div class="quick-step" id="quick-step-2">
+      <div class="section">
+        <h2>是因为孩子的什么事? <span class="badge">2 / 3</span></h2>
+        <p class="why">写一两句就好,不用完整、不用文采。第一句冒出来的话往往最真实。</p>
+        <textarea id="quick-q1b" placeholder="比如:她最近不怎么和我说话了……"></textarea>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn-secondary" id="btnQuickBack2">← 上一步</button>
+        <button type="button" class="btn-primary" id="btnQuickNext2">下一步 →</button>
+      </div>
+    </div>
+
+    <!-- Quick Step 3: 此刻最想要的 -->
+    <div class="quick-step" id="quick-step-3">
+      <div class="section">
+        <h2>此刻您最想要的是? <span class="badge">3 / 3</span></h2>
+        <p class="why">没有标准答案。选完会自动生成一段回应给您。</p>
+        <div class="options vertical" data-name="quick-want">
+          <label><input type="radio" name="quick-want" value="听"><span>有人听我说话就好</span></label>
+          <label><input type="radio" name="quick-want" value="角度"><span>想听到一些不一样的角度</span></label>
+          <label><input type="radio" name="quick-want" value="怎么办"><span>想知道接下来该怎么做</span></label>
+          <label class="warn"><input type="radio" name="quick-want" value="专业"><span>我可能需要专业帮助</span></label>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button type="button" class="btn-secondary" id="btnQuickBack3">← 上一步</button>
+      </div>
+    </div>
+
+    <!-- Quick Result: 即时回应 -->
+    <div class="quick-step" id="quick-step-result">
+      <div class="reply-card">
+        <div class="reply-header">
+          <span class="reply-icon">💜</span>
+          <span class="reply-title">这是我读完您写的之后,想跟您说的话</span>
+        </div>
+        <div class="reply-body" id="quick-reply-body">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <div class="next-actions">
+        <h3>接下来您可以——</h3>
+        <button class="next-btn" id="btnQuickToFull">
+          <strong>我想说更多</strong>
+          <span>进入完整版,刚才的回答会带过去</span>
+        </button>
+        <button class="next-btn secondary" id="btnQuickEnd">
+          <strong>今天先到这里</strong>
+          <span>您来过、说过、被读过。这就够了</span>
+        </button>
+        <button class="next-btn warn" id="btnQuickResources">
+          <strong>我现在需要专业资源</strong>
+          <span>查看心理援助热线和医院</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 2: Page 1 - Intro & 主诉             -->
+  <!-- ========================================== -->
+  <section class="screen" id="screen-page1">
+    <div class="progress show">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-text" id="progressText">第 1 部分 · 让我们先认识彼此</div>
+    </div>
+
+    <div class="step-info">第 <strong>1</strong> 部分(共 3 部分) · 让我们先认识彼此</div>
+
+    <!-- Section: 角色 -->
+    <div class="section intro">
+      <h2>先让我们认识您 <span class="badge">3 题</span></h2>
+      <p class="why">不同的角色、不同的处境,我们会用不同的语气陪您。</p>
+
+      <div class="question" data-q="r1">
+        <div class="q-text"><span class="q-num">R1</span>您是孩子的<span class="required-mark">*必答</span></div>
+        <div class="options" data-name="r1" data-key="填写人角色">
+          <label><input type="radio" name="r1" value="妈妈"><span>妈妈</span></label>
+          <label><input type="radio" name="r1" value="爸爸"><span>爸爸</span></label>
+          <label><input type="radio" name="r1" value="奶奶/外婆"><span>奶奶/外婆</span></label>
+          <label><input type="radio" name="r1" value="爷爷/外公"><span>爷爷/外公</span></label>
+          <label><input type="radio" name="r1" value="其他抚养人" data-other="r1_other"><span>其他抚养人...</span></label>
+        </div>
+        <div class="other-input" id="r1_other_wrap">
+          <input type="text" data-other-for="r1_other" placeholder="请说明..." />
+        </div>
+      </div>
+
+      <div class="question" data-q="r2">
+        <div class="q-text"><span class="q-num">R2</span>您是孩子的主要照料者吗?<span class="required-mark">*必答</span></div>
+        <div class="options vertical" data-name="r2" data-key="主要照料程度">
+          <label><input type="radio" name="r2" value="是,日常基本是我在管"><span>是,日常基本是我在管</span></label>
+          <label><input type="radio" name="r2" value="不完全是,我和另一半各管一半"><span>不完全是,我和另一半各管一半</span></label>
+          <label><input type="radio" name="r2" value="不是,主要是其他人在管"><span>不是,主要是其他人在管</span></label>
+        </div>
+      </div>
+
+      <div class="question" data-q="r3">
+        <div class="q-text"><span class="q-num">R3</span>您今天填这份问卷<span class="required-mark">*必答</span></div>
+        <div class="options vertical" data-name="r3" data-key="填写动机">
+          <label><input type="radio" name="r3" value="我自己想做的"><span>我自己想做的</span></label>
+          <label><input type="radio" name="r3" value="伴侣建议的"><span>伴侣建议的</span></label>
+          <label><input type="radio" name="r3" value="其他人(老师/朋友)建议的"><span>其他人(老师/朋友)建议的</span></label>
+          <label><input type="radio" name="r3" value="不太想填,但还是来了"><span>不太想填,但还是来了</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: 主诉 三段式倾诉 -->
+    <div class="section">
+      <h2>说说您此刻的处境 <span class="badge">主诉 · 8 题</span></h2>
+      <p class="why">不用一次说完。我们会用三个小台阶,陪您慢慢说。</p>
+
+      <!-- Q1a 一个词 -->
+      <div class="question" data-q="q1a">
+        <div class="q-text"><span class="q-num">Q1</span>第一步:用一个词,形容您此刻的感觉<span class="required-mark">*必答</span></div>
+        <div class="q-hint">凭直觉选,选不到完全准确的也没关系。</div>
+        <div class="options" data-name="q1a" data-key="此刻情绪词">
+          <label><input type="radio" name="q1a" value="焦虑"><span>焦虑</span></label>
+          <label><input type="radio" name="q1a" value="难过"><span>难过</span></label>
+          <label><input type="radio" name="q1a" value="无力"><span>无力</span></label>
+          <label><input type="radio" name="q1a" value="生气"><span>生气</span></label>
+          <label><input type="radio" name="q1a" value="困惑"><span>困惑</span></label>
+          <label><input type="radio" name="q1a" value="担心"><span>担心</span></label>
+          <label><input type="radio" name="q1a" value="麻木"><span>麻木</span></label>
+          <label><input type="radio" name="q1a" value="自责"><span>自责</span></label>
+          <label><input type="radio" name="q1a" value="还好"><span>还好</span></label>
+          <label><input type="radio" name="q1a" value="其他" data-other="q1a_other"><span>其他...</span></label>
+        </div>
+        <div class="other-input" id="q1a_other_wrap">
+          <input type="text" data-other-for="q1a_other" placeholder="您此刻的感觉..." />
+        </div>
+        <!-- AI bubble after Q1a -->
+        <div class="ai-bubble" id="ai-after-q1a">
+          看到您选的这个词了。这种感觉先放在这里,我们陪您。
+        </div>
+      </div>
+
+      <!-- Q1b 简短描述 -->
+      <div class="question" data-q="q1b">
+        <div class="q-text"><span class="q-num">Q2</span>第二步:这个感觉,主要是因为孩子的什么事?<span class="required-mark">*必答</span></div>
+        <div class="q-hint">写一两句就好,不用完整、不用文采。第一句冒出来的话往往最真实。</div>
+        <textarea name="q1b" data-key="主诉简述" class="short" placeholder="比如:她最近不怎么和我说话了……" required></textarea>
+      </div>
+
+      <!-- Q1c 详细描述 -->
+      <div class="question" data-q="q1c">
+        <div class="q-text"><span class="q-num">Q3</span>第三步:如果让您再补充一些细节,您会说……<span class="optional-mark">(可选,但写下来对您和孩子都有帮助)</span></div>
+        <div class="q-hint">想到什么写什么。可以详细,可以零碎。可以跳过。</div>
+        <textarea name="q1c" data-key="主诉详述" placeholder="可以写发生了什么事、孩子说过什么话、您的感受……"></textarea>
+      </div>
+
+      <!-- Q2 担忧 -->
+      <div class="question" data-q="q2">
+        <div class="q-text"><span class="q-num">Q4</span>您最担心的是哪些方面?(最多 3 项)<span class="required-mark">*必答</span></div>
+        <div class="options vertical" data-name="q2" data-key="主要担忧" data-multi="true" data-max="3">
+          <label><input type="checkbox" value="学习状态(成绩下滑、不想学、拖延)"><span>学习状态(成绩下滑、不想学、拖延)</span></label>
+          <label><input type="checkbox" value="情绪问题(容易发脾气、低落、哭闹)"><span>情绪问题(容易发脾气、低落、哭闹)</span></label>
+          <label><input type="checkbox" value="行为问题(顶嘴、说谎、网瘾、不出门)"><span>行为问题(顶嘴、说谎、网瘾、不出门)</span></label>
+          <label><input type="checkbox" value="沟通问题(什么都不说、吼我、关房门)"><span>沟通问题(什么都不说、吼我、关房门)</span></label>
+          <label><input type="checkbox" value="身体信号(失眠、厌食、暴食、各种不舒服)"><span>身体信号(失眠、厌食、暴食、各种不舒服)</span></label>
+          <label><input type="checkbox" value="社交问题(没朋友、被孤立、过度社交)"><span>社交问题(没朋友、被孤立、过度社交)</span></label>
+          <label class="warn"><input type="checkbox" value="自我攻击(说自己不好、自残过、说不想活)" data-crisis="true"><span>⚠ 自我攻击(说自己不好、自残过、说不想活)</span></label>
+          <label><input type="checkbox" value="学校问题(被欺负、抗拒老师、不去学校)"><span>学校问题(被欺负、抗拒老师、不去学校)</span></label>
+          <label><input type="checkbox" value="其他" data-other="q2_other"><span>其他...</span></label>
+        </div>
+        <div class="other-input" id="q2_other_wrap">
+          <input type="text" data-other-for="q2_other" placeholder="请描述其他担忧..." />
+        </div>
+        <!-- AI bubble after Q2 -->
+        <div class="ai-bubble" id="ai-after-q2">
+          您勾选的这些,我们看到了。一项一项,都放在心上。
+        </div>
+      </div>
+
+      <!-- Crisis banner -->
+      <div class="crisis-banner" id="crisisBanner">
+        <strong>⚠ 重要提示</strong><br>
+        我们注意到您勾选了「自我攻击」相关项。这可能需要专业医疗评估。
+        请在完成问卷后,<strong>优先联系专业机构</strong>:<br>
+        • 全国 24h 心理援助热线:<strong>400-161-9995</strong><br>
+        • 北京危机干预中心:<strong>010-82951332</strong><br>
+        • 北医六院 / 各省精神卫生中心 儿童青少年精神科<br>
+        我们的服务无法替代专业医疗。<br>
+        <br>
+        <strong>您不需要独自面对这件事。</strong>
+      </div>
+
+      <!-- Q3 年龄段 -->
+      <div class="question" data-q="q3">
+        <div class="q-text"><span class="q-num">Q5</span>孩子目前的年龄段?<span class="required-mark">*必答</span></div>
+        <div class="options" data-name="q3" data-key="孩子年龄段">
+          <label><input type="radio" name="q3" value="6-9 岁(学龄初期)"><span>6-9 岁(学龄初期)</span></label>
+          <label><input type="radio" name="q3" value="10-12 岁(学龄高段)"><span>10-12 岁(学龄高段)</span></label>
+          <label><input type="radio" name="q3" value="13-15 岁(青春期前期)"><span>13-15 岁(青春期前期)</span></label>
+          <label><input type="radio" name="q3" value="16-18 岁(青春期后期)"><span>16-18 岁(青春期后期)</span></label>
+          <label><input type="radio" name="q3" value="18 岁以上"><span>18 岁以上</span></label>
+        </div>
+      </div>
+
+      <!-- Q4 持续时间 -->
+      <div class="question" data-q="q4">
+        <div class="q-text"><span class="q-num">Q6</span>这种情况持续多久了?<span class="required-mark">*必答</span></div>
+        <div class="options" data-name="q4" data-key="持续时间">
+          <label><input type="radio" name="q4" value="不到 2 周"><span>不到 2 周</span></label>
+          <label><input type="radio" name="q4" value="2 周到 1 个月"><span>2 周到 1 个月</span></label>
+          <label><input type="radio" name="q4" value="1-3 个月"><span>1-3 个月</span></label>
+          <label><input type="radio" name="q4" value="3-6 个月"><span>3-6 个月</span></label>
+          <label><input type="radio" name="q4" value="半年以上"><span>半年以上</span></label>
+          <label><input type="radio" name="q4" value="一直都这样"><span>一直都这样</span></label>
+        </div>
+      </div>
+
+      <!-- Q5 触发 -->
+      <div class="question" data-q="q5">
+        <div class="q-text"><span class="q-num">Q7</span>是什么让您今天来到这里?<span class="required-mark">*必答</span></div>
+        <div class="options vertical" data-name="q5" data-key="此刻的触发">
+          <label><input type="radio" name="q5" value="和孩子吵了一架,特别难受"><span>和孩子吵了一架,特别难受</span></label>
+          <label><input type="radio" name="q5" value="老师/学校反映了问题"><span>老师/学校反映了问题</span></label>
+          <label><input type="radio" name="q5" value="孩子说了让我害怕的话"><span>孩子说了让我害怕的话</span></label>
+          <label><input type="radio" name="q5" value="我观察了很久,越来越不安"><span>我观察了很久,越来越不安</span></label>
+          <label><input type="radio" name="q5" value="试过很多办法都没用"><span>试过很多办法都没用</span></label>
+          <label><input type="radio" name="q5" value="伴侣/家人意见不一致,我没主意了"><span>伴侣/家人意见不一致,我没主意了</span></label>
+          <label><input type="radio" name="q5" value="其他" data-other="q5_other"><span>其他...</span></label>
+        </div>
+        <div class="other-input" id="q5_other_wrap">
+          <input type="text" data-other-for="q5_other" placeholder="请描述..." />
+        </div>
+      </div>
+
+      <!-- Q6 试过的方法 -->
+      <div class="question" data-q="q6">
+        <div class="q-text"><span class="q-num">Q8</span>到目前为止,您试过哪些方法?效果怎么样?<span class="required-mark">*必答</span></div>
+        <div class="q-hint">您试过的努力,值得被记下来。哪怕只写"吼过""谈过"也行。</div>
+        <textarea name="q6" data-key="尝试过的方法" placeholder="比如:吼过、好好谈过、限制手机、找过心理老师……" required></textarea>
+      </div>
+
+      <!-- Q7 影响 -->
+      <div class="question" data-q="q7">
+        <div class="q-text"><span class="q-num">Q9</span>这件事对您整个生活的影响有多大?<span class="required-mark">*必答</span></div>
+        <div class="scale" data-name="q7" data-key="生活影响程度">
+          <div class="scale-label"><span>1 偶尔烦一下</span><span>10 已经睡不着、上不了班</span></div>
+          <label><input type="radio" name="q7" value="1"><span>1</span></label>
+          <label><input type="radio" name="q7" value="2"><span>2</span></label>
+          <label><input type="radio" name="q7" value="3"><span>3</span></label>
+          <label><input type="radio" name="q7" value="4"><span>4</span></label>
+          <label><input type="radio" name="q7" value="5"><span>5</span></label>
+          <label><input type="radio" name="q7" value="6"><span>6</span></label>
+          <label><input type="radio" name="q7" value="7"><span>7</span></label>
+          <label><input type="radio" name="q7" value="8"><span>8</span></label>
+          <label><input type="radio" name="q7" value="9"><span>9</span></label>
+          <label><input type="radio" name="q7" value="10"><span>10</span></label>
+        </div>
+        <!-- AI bubble after Q7 if score >= 7 -->
+        <div class="ai-bubble" id="ai-after-q7">
+          您打了一个不轻的分数——这意味着这件事已经不只是孩子的事,它在您身上也很重。<br>
+          请允许自己,也是被关心的人。
+        </div>
+      </div>
+
+      <!-- Q8 亲子关系 -->
+      <div class="question" data-q="q8">
+        <div class="q-text"><span class="q-num">Q10</span>您觉得现在和孩子的关系,有几分?<span class="required-mark">*必答</span></div>
+        <div class="scale" data-name="q8" data-key="亲子关系评分">
+          <div class="scale-label"><span>1 形同陌路/一说话就吵</span><span>10 无话不谈</span></div>
+          <label><input type="radio" name="q8" value="1"><span>1</span></label>
+          <label><input type="radio" name="q8" value="2"><span>2</span></label>
+          <label><input type="radio" name="q8" value="3"><span>3</span></label>
+          <label><input type="radio" name="q8" value="4"><span>4</span></label>
+          <label><input type="radio" name="q8" value="5"><span>5</span></label>
+          <label><input type="radio" name="q8" value="6"><span>6</span></label>
+          <label><input type="radio" name="q8" value="7"><span>7</span></label>
+          <label><input type="radio" name="q8" value="8"><span>8</span></label>
+          <label><input type="radio" name="q8" value="9"><span>9</span></label>
+          <label><input type="radio" name="q8" value="10"><span>10</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button type="button" class="btn-secondary" id="btnBackToWelcome">回首页</button>
+      <button type="button" class="btn-primary" id="btnGoPage2">下一部分 →</button>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 3: Page 2 - 关键背景                 -->
+  <!-- ========================================== -->
+  <section class="screen" id="screen-page2">
+    <div class="progress show">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill2"></div></div>
+      <div class="progress-text" id="progressText2">第 2 部分 · 我们一起看看家</div>
+    </div>
+
+    <div class="step-info">第 <strong>2</strong> 部分(共 3 部分) · 我们一起看看家</div>
+
+    <div class="between-page-card">
+      <span class="icon">🌿</span>
+      做得很好。<br>
+      接下来这部分,我们暂时不只看孩子——<br>
+      因为孩子的状态,从来不是孤立发生的。
+    </div>
+
+    <div class="section">
+      <h2>家的样子 <span class="badge">关键背景 · 13 题</span></h2>
+      <p class="why">这一组问题帮我们理解孩子所处的整体环境。很多时候,答案不在孩子身上,而在这里。</p>
+
+      <!-- Q9 -->
+      <div class="question" data-q="q9">
+        <div class="q-text"><span class="q-num">Q11</span>孩子和谁一起生活?<span class="required-mark">*必答</span></div>
+        <div class="options vertical" data-name="q9" data-key="家庭结构">
+          <label><input type="radio" name="q9" value="爸妈 + 孩子"><span>爸妈 + 孩子</span></label>
+          <label><input type="radio" name="q9" value="单亲家庭" data-other="q9_other"><span>单亲家庭(请说明哪一方)...</span></label>
+          <label><input type="radio" name="q9" value="三代同堂"><span>三代同堂</span></label>
+          <label><input type="radio" name="q9" value="寄养在亲戚家"><span>寄养在亲戚家</span></label>
+          <label><input type="radio" name="q9" value="寄宿学校"><span>寄宿学校</span></label>
+          <label><input type="radio" name="q9" value="其他" data-other="q9_other"><span>其他...</span></label>
+        </div>
+        <div class="other-input" id="q9_other_wrap">
+          <input type="text" data-other-for="q9_other" placeholder="请说明..." />
+        </div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="question" data-q="q10">
+        <div class="q-text"><span class="q-num">Q12</span>家里谁主要管教孩子?<span class="required-mark">*必答</span></div>
+        <div class="options" data-name="q10" data-key="主要管教者">
+          <label><input type="radio" name="q10" value="妈妈为主"><span>妈妈为主</span></label>
+          <label><input type="radio" name="q10" value="爸爸为主"><span>爸爸为主</span></label>
+          <label><input type="radio" name="q10" value="双方均衡"><span>双方均衡</span></label>
+          <label><input type="radio" name="q10" value="老人为主"><span>老人为主</span></label>
+          <label><input type="radio" name="q10" value="没人管 / 都不太管"><span>没人管 / 都不太管</span></label>
+        </div>
+      </div>
+
+      <!-- Q11 -->
+      <div class="question" data-q="q11">
+        <div class="q-text"><span class="q-num">Q13</span>在教育孩子上,家庭成员意见统一吗?<span class="required-mark">*必答</span></div>
+        <div class="scale" data-name="q11" data-key="家庭教育共识">
+          <div class="scale-label"><span>1 经常因此吵架</span><span>10 高度一致</span></div>
+          <label><input type="radio" name="q11" value="1"><span>1</span></label>
+          <label><input type="radio" name="q11" value="2"><span>2</span></label>
+          <label><input type="radio" name="q11" value="3"><span>3</span></label>
+          <label><input type="radio" name="q11" value="4"><span>4</span></label>
+          <label><input type="radio" name="q11" value="5"><span>5</span></label>
+          <label><input type="radio" name="q11" value="6"><span>6</span></label>
+          <label><input type="radio" name="q11" value="7"><span>7</span></label>
+          <label><input type="radio" name="q11" value="8"><span>8</span></label>
+          <label><input type="radio" name="q11" value="9"><span>9</span></label>
+          <label><input type="radio" name="q11" value="10"><span>10</span></label>
+        </div>
+      </div>
+
+      <!-- Q12 -->
+      <div class="question" data-q="q12">
+        <div class="q-text"><span class="q-num">Q14</span>过去一年,家里发生过这些事吗?(可多选)<span class="required-mark">*必答</span></div>
+        <div class="q-hint">很多孩子的"突然不对劲",其实是对家庭事件的延迟反应。</div>
+        <div class="options vertical" data-name="q12" data-key="家庭重大事件" data-multi="true">
+          <label><input type="checkbox" value="父母吵架/冷战频繁"><span>父母吵架/冷战频繁</span></label>
+          <label><input type="checkbox" value="父母分居/离异"><span>父母分居/离异</span></label>
+          <label><input type="checkbox" value="家人重病/去世"><span>家人重病/去世</span></label>
+          <label><input type="checkbox" value="搬家"><span>搬家</span></label>
+          <label><input type="checkbox" value="转学/换班"><span>转学/换班</span></label>
+          <label><input type="checkbox" value="二胎出生"><span>二胎出生</span></label>
+          <label><input type="checkbox" value="经济压力变大"><span>经济压力变大</span></label>
+          <label><input type="checkbox" value="父母工作变动/失业"><span>父母工作变动/失业</span></label>
+          <label><input type="checkbox" value="没有什么特别的"><span>没有什么特别的</span></label>
+        </div>
+      </div>
+
+      <!-- Q13 -->
+      <div class="question" data-q="q13">
+        <div class="q-text"><span class="q-num">Q15</span>您自己最近的状态怎么样?<span class="required-mark">*必答</span></div>
+        <div class="options vertical" data-name="q13" data-key="家长自身状态">
+          <label><input type="radio" name="q13" value="我挺好,主要是孩子的事"><span>我挺好,主要是孩子的事</span></label>
+          <label><input type="radio" name="q13" value="有点累,但还能撑"><span>有点累,但还能撑</span></label>
+          <label><input type="radio" name="q13" value="状态很差,孩子的事让我崩溃"><span>状态很差,孩子的事让我崩溃</span></label>
+          <label><input type="radio" name="q13" value="我自己也有一些情绪问题"><span>我自己也有一些情绪问题</span></label>
+          <label><input type="radio" name="q13" value="不想说"><span>不想说</span></label>
+        </div>
+      </div>
+
+      <!-- Q14 -->
+      <div class="question" data-q="q14">
+        <div class="q-text"><span class="q-num">Q16</span>您和伴侣的关系怎么样?<span class="required-mark">*必答</span></div>
+        <div class="q-hint">如已离异/单身,请选择"不适用"。</div>
+        <div class="scale" data-name="q14" data-key="夫妻关系评分">
+          <div class="scale-label"><span>1 几乎没话/天天吵</span><span>10 很好</span></div>
+          <label><input type="radio" name="q14" value="1"><span>1</span></label>
+          <label><input type="radio" name="q14" value="2"><span>2</span></label>
+          <label><input type="radio" name="q14" value="3"><span>3</span></label>
+          <label><input type="radio" name="q14" value="4"><span>4</span></label>
+          <label><input type="radio" name="q14" value="5"><span>5</span></label>
+          <label><input type="radio" name="q14" value="6"><span>6</span></label>
+          <label><input type="radio" name="q14" value="7"><span>7</span></label>
+          <label><input type="radio" name="q14" value="8"><span>8</span></label>
+          <label><input type="radio" name="q14" value="9"><span>9</span></label>
+          <label><input type="radio" name="q14" value="10"><span>10</span></label>
+          <label style="flex: 0 0 auto; min-width: 70px;"><input type="radio" name="q14" value="不适用"><span>不适用</span></label>
+        </div>
+      </div>
+
+      <!-- Q15 -->
+      <div class="question" data-q="q15">
+        <div class="q-text"><span class="q-num">Q17</span>您小时候,家里的氛围是?<span class="required-mark">*必答</span></div>
+        <div class="q-hint">这道题如果让您不舒服,可以选"我暂时不想回答"——我们不会因此失去理解您的机会。</div>
+        <div class="options vertical" data-name="q15" data-key="家长原生家庭氛围">
+          <label><input type="radio" name="q15" value="温暖、放松"><span>温暖、放松</span></label>
+          <label><input type="radio" name="q15" value="严厉、有压力"><span>严厉、有压力</span></label>
+          <label><input type="radio" name="q15" value="冷淡、各过各的"><span>冷淡、各过各的</span></label>
+          <label><input type="radio" name="q15" value="冲突很多"><span>冲突很多</span></label>
+          <label><input type="radio" name="q15" value="不想回忆"><span>不想回忆</span></label>
+          <label><input type="radio" name="q15" value="我暂时不想回答这个"><span>我暂时不想回答这个</span></label>
+        </div>
+        <!-- AI bubble after Q15 if not 温暖 -->
+        <div class="ai-bubble" id="ai-after-q15">
+          谢谢您愿意回想这一题。我们会在报告里小心地处理它——<br>
+          因为您今天能填这份问卷,本身就说明:您已经在做和上一辈不一样的事了。
+        </div>
+      </div>
+
+      <!-- Q16 -->
+      <div class="question" data-q="q16">
+        <div class="q-text"><span class="q-num">Q18</span>孩子最近的睡眠?<span class="required-mark">*必答</span></div>
+        <div class="options" data-name="q16" data-key="孩子睡眠状况">
+          <label><input type="radio" name="q16" value="正常"><span>正常</span></label>
+          <label><input type="radio" name="q16" value="入睡困难"><span>入睡困难</span></label>
+          <label><input type="radio" name="q16" value="早醒/多梦"><span>早醒/多梦</span></label>
+          <label><input type="radio" name="q16" value="嗜睡/起不来"><span>嗜睡/起不来</span></label>
+          <label><input type="radio" name="q16" value="昼夜颠倒"><span>昼夜颠倒</span></label>
+        </div>
+      </div>
+
+      <!-- Q17 -->
+      <div class="question" data-q="q17">
+        <div class="q-text"><span class="q-num">Q19</span>孩子最近吃饭?<span class="required-mark">*必答</span></div>
+        <div class="options" data-name="q17" data-key="孩子饮食状况">
+          <label><input type="radio" name="q17" value="正常"><span>正常</span></label>
+          <label><input type="radio" name="q17" value="食欲下降"><span>食欲下降</span></label>
+          <label><input type="radio" name="q17" value="暴食/偏食严重"><span>暴食/偏食严重</span></label>
+          <label><input type="radio" name="q17" value="不和家人一起吃"><span>不和家人一起吃</span></label>
+        </div>
+      </div>
+
+      <!-- Q18 -->
+      <div class="question" data-q="q18">
+        <div class="q-text"><span class="q-num">Q20</span>孩子大部分时间在做什么?<span class="required-mark">*必答</span></div>
+        <div class="options vertical" data-name="q18" data-key="孩子日常状态">
+          <label><input type="radio" name="q18" value="学习"><span>学习</span></label>
+          <label><input type="radio" name="q18" value="手机/游戏/视频"><span>手机/游戏/视频</span></label>
+          <label><input type="radio" name="q18" value="一个人发呆"><span>一个人发呆</span></label>
+          <label><input type="radio" name="q18" value="和朋友在一起"><span>和朋友在一起</span></label>
+          <label><input type="radio" name="q18" value="不知道,他/她不让我看"><span>不知道,他/她不让我看</span></label>
+        </div>
+      </div>
+
+      <!-- Q19 -->
+      <div class="question" data-q="q19">
+        <div class="q-text"><span class="q-num">Q21</span>还有什么想告诉我们的?<span class="optional-mark">(可选)</span></div>
+        <div class="q-hint">任何您觉得重要的细节,都可以写在这里。</div>
+        <textarea name="q19" data-key="补充信息" placeholder="可以写也可以跳过..."></textarea>
+      </div>
+
+      <!-- Q19a: 归因 -->
+      <div class="question" data-q="q19a">
+        <div class="q-text"><span class="q-num">Q22</span>在您看来,当前的问题主要跟谁的行为或状态有关?(可多选)<span class="required-mark">*必答</span></div>
+        <div class="q-hint">没有标准答案——很多问题是多方交互产生的。选多个完全正常。这一题不是追究责任,而是帮助我们理解您的视角。</div>
+        <div class="options vertical" data-name="q19a" data-key="问题归因(家长视角)" data-multi="true">
+          <label><input type="checkbox" value="孩子自身(性格/习惯/能力)"><span>孩子自身(性格/习惯/能力)</span></label>
+          <label><input type="checkbox" value="我自己(教育方式/情绪/期望)"><span>我自己(教育方式/情绪/期望)</span></label>
+          <label><input type="checkbox" value="另一位家长(配偶/前配偶)"><span>另一位家长(配偶/前配偶)</span></label>
+          <label><input type="checkbox" value="祖辈(爷奶/外公外婆)"><span>祖辈(爷奶/外公外婆)</span></label>
+          <label><input type="checkbox" value="学校/老师"><span>学校/老师</span></label>
+          <label><input type="checkbox" value="同伴关系/社交环境"><span>同伴关系/社交环境</span></label>
+          <label><input type="checkbox" value="整体家庭氛围"><span>整体家庭氛围</span></label>
+          <label><input type="checkbox" value="社会环境/教育体制"><span>社会环境/教育体制</span></label>
+          <label><input type="checkbox" value="说不清/不确定"><span>说不清/不确定</span></label>
+        </div>
+        <!-- AI bubble after Q19a -->
+        <div class="ai-bubble" id="ai-after-q19a">
+          谢谢您的坦诚。您怎么看这个问题,本身就是很重要的信息——它帮助我们理解整个家的互动模式,而不是去找"谁对谁错"。
+        </div>
+      </div>
+
+      <!-- Q19b: 互动情绪 -->
+      <div class="question" data-q="q19b">
+        <div class="q-text"><span class="q-num">Q23</span>您日常和孩子互动时,最常感受到的情绪是?(可多选,最多 3 项)<span class="required-mark">*必答</span></div>
+        <div class="q-hint">这一题关注的是您——因为您的状态,直接影响着孩子能感受到的"家的温度"。</div>
+        <div class="options vertical" data-name="q19b" data-key="家长互动情绪" data-multi="true" data-max="3">
+          <label><input type="checkbox" value="焦虑(担心孩子的未来)"><span>焦虑(担心孩子的未来)</span></label>
+          <label><input type="checkbox" value="挫败(说了很多遍没用)"><span>挫败(说了很多遍没用)</span></label>
+          <label><input type="checkbox" value="内疚(觉得是不是自己没做好)"><span>内疚(觉得是不是自己没做好)</span></label>
+          <label><input type="checkbox" value="愤怒(忍不住发火)"><span>愤怒(忍不住发火)</span></label>
+          <label><input type="checkbox" value="心疼(看孩子辛苦但帮不上)"><span>心疼(看孩子辛苦但帮不上)</span></label>
+          <label><input type="checkbox" value="无力/疲惫"><span>无力/疲惫</span></label>
+          <label><input type="checkbox" value="平静(能保持情绪稳定)"><span>平静(能保持情绪稳定)</span></label>
+          <label><input type="checkbox" value="距离感(觉得和孩子越来越远)"><span>距离感(觉得和孩子越来越远)</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button type="button" class="btn-secondary" id="btnBackToPage1">← 上一步</button>
+      <button type="button" class="btn-primary" id="btnGoPage3">下一部分 →</button>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 4: Page 3 - 深度反思                 -->
+  <!-- ========================================== -->
+  <section class="screen" id="screen-page3">
+    <div class="progress show">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill3"></div></div>
+      <div class="progress-text" id="progressText3">第 3 部分 · 三个让我们慢一点的问题</div>
+    </div>
+
+    <div class="step-info">第 <strong>3</strong> 部分(共 3 部分) · 三个让我们慢一点的问题</div>
+
+    <div class="between-page-card">
+      <span class="icon">🪞</span>
+      接下来三个问题,没有标准答案。<br>
+      请用您此刻的真实感觉作答——<br>
+      <strong>直觉,常常比思考更准。</strong><br>
+      也可以写"不知道""说不清",这本身也是答案。
+    </div>
+
+    <div class="section deep">
+      <h2>三个让我们慢一点的问题 <span class="badge">深度反思 · 4 题</span></h2>
+      <p class="why">这一部分不打分、不评判。您写的每一句,我们都会认真读。</p>
+
+      <!-- Q20 -->
+      <div class="question" data-q="q20">
+        <div class="q-text"><span class="q-num">Q24</span>如果您能听到孩子心里<u>没说出来</u>的一句话,您觉得会是什么?<span class="required-mark">*必答</span></div>
+        <div class="q-hint">凭直觉写,第一句冒出来的就是答案。</div>
+        <textarea name="q20" data-key="孩子未说出的心里话(家长想象)" placeholder="他/她可能在心里想……" required></textarea>
+      </div>
+
+      <!-- Q21a 拆题第一部分 -->
+      <div class="question" data-q="q21a">
+        <div class="q-text"><span class="q-num">Q25</span>如果让您说"我最怕孩子变成什么样",您脑子里第一个画面是?<span class="required-mark">*必答</span></div>
+        <div class="q-hint">写一句话就好,不用解释。第一个冒出来的画面,就是它。</div>
+        <textarea name="q21a" data-key="家长最怕的画面" class="short" placeholder="比如:看到他/她整天躺床上不出门……" required></textarea>
+      </div>
+
+      <!-- Q21b 拆题第二部分 -->
+      <div class="question" data-q="q21b">
+        <div class="q-text"><span class="q-num">Q26</span>这个画面熟悉吗?它让您想起谁、想起什么时候?<span class="required-mark">*必答</span></div>
+        <div class="q-hint">这一题不强求精确。"不知道""说不清"也是真实的答案。</div>
+        <div class="options vertical" data-name="q21b" data-key="恐惧的来源">
+          <label><input type="radio" name="q21b" value="想起我自己小时候"><span>想起我自己小时候</span></label>
+          <label><input type="radio" name="q21b" value="想起身边某个失败的例子"><span>想起身边某个失败的例子</span></label>
+          <label><input type="radio" name="q21b" value="想起一些新闻、报道"><span>想起一些新闻、报道</span></label>
+          <label><input type="radio" name="q21b" value="不知道,说不清"><span>不知道,说不清</span></label>
+          <label><input type="radio" name="q21b" value="其他" data-other="q21b_other"><span>其他...</span></label>
+        </div>
+        <div class="other-input" id="q21b_other_wrap">
+          <input type="text" data-other-for="q21b_other" placeholder="想起的是……" />
+        </div>
+      </div>
+
+      <!-- Q22 -->
+      <div class="question" data-q="q22">
+        <div class="q-text"><span class="q-num">Q27</span>如果您是孩子,每天回到这个家,您最大的感受会是什么?<span class="optional-mark">(可选 · 这道题如果让您不舒服,可以跳过)</span></div>
+        <div class="q-hint">试着站在孩子的位置坐一会儿。但如果今天还没准备好,跳过也是答案。</div>
+        <textarea name="q22" data-key="假如您是孩子的感受" placeholder="如果我是他/她,我每天回到这个家,会觉得……"></textarea>
+      </div>
+
+      <!-- Free talk: 倾诉补偿 -->
+      <div class="question" data-q="free">
+        <div class="q-text"><span class="q-num">Q28</span>最后,如果您还想说点什么……<span class="optional-mark">(可选)</span></div>
+        <div class="q-hint">
+          不针对孩子,不针对家庭,只是您自己想说的话。<br>
+          可以是抱怨、是疲惫、是希望、是任何冒出来的句子。<br>
+          这一段我们只读、不分析。
+        </div>
+        <textarea name="free" data-key="家长自由倾诉" placeholder="想说什么都行,这是属于您的角落……"></textarea>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button type="button" class="btn-secondary" id="btnBackToPage2">← 上一步</button>
+      <button type="button" class="btn-success" id="submitBtn">完成 · 生成结果</button>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 5: Browse (free article)             -->
+  <!-- ========================================== -->
+  <section class="screen" id="screen-browse">
+    <header style="background: linear-gradient(135deg, #7ba88f 0%, #6ba38e 100%);">
+      <h1>3 分钟看懂青春期家长的常见误区</h1>
+      <p class="subtitle">先看,不急着填表</p>
+    </header>
+
+    <div class="section">
+      <h2>误区一 · "他变了" <span class="badge">认知</span></h2>
+      <p class="why">青春期的孩子不是"变了一个人",是"开始成为一个人"。他/她需要从"父母的孩子"变成"自己",这个过程会显得疏远、叛逆、神秘。这不是病,是必经之路。</p>
+      <p>当您说"他怎么突然这样"——其实他/她已经在路上很久,只是您今天才看见。</p>
+    </div>
+
+    <div class="section">
+      <h2>误区二 · "他/她不爱我了" <span class="badge">关系</span></h2>
+      <p class="why">青春期的孩子对父母的爱,常常用"距离"来表达——锁门、不回信息、嫌烦。但他们对您依然有强烈的需要,只是这份需要不再表现为依赖,而是"知道您还在"。</p>
+      <p>您能做的不是追上去,而是<strong>稳稳地留在原地</strong>——他/她回头时,看到您还在,就够了。</p>
+    </div>
+
+    <div class="section">
+      <h2>误区三 · "都是手机/游戏的错" <span class="badge">替罪羊</span></h2>
+      <p class="why">手机和游戏更多是"症状"而不是"原因"。当一个孩子把大部分时间放在虚拟世界,我们要问的不是"怎么让她戒掉",而是"现实世界里,什么让她不愿意回来?"</p>
+      <p>限制游戏只是治标。治本的问题永远是:<strong>她在游戏里得到的(可控感、成就感、认同感),为什么家里给不了?</strong></p>
+    </div>
+
+    <div class="section">
+      <h2>误区四 · "我都是为他/她好" <span class="badge">边界</span></h2>
+      <p class="why">"为你好"是中国家长最常用、也最容易让孩子受伤的话。因为这句话隐含着:"我比你更懂什么对你好,所以你必须听我的。"</p>
+      <p>真正的爱往往是:<strong>"我相信你比我更懂你自己,我支持你的选择。"</strong></p>
+    </div>
+
+    <div class="section">
+      <h2>误区五 · "孩子是问题的全部" <span class="badge">系统</span></h2>
+      <p class="why">家是一个系统。当系统里某个部分(夫妻关系、家长情绪、家庭事件)出问题时,常常是孩子先表现出来——因为孩子最敏感、最不会掩饰。</p>
+      <p>所以,当我们说"孩子有问题"时,常常是<strong>家在向我们求助</strong>。</p>
+    </div>
+
+    <div class="welcome-card">
+      <h2>看完了,要不要试试这份问卷?</h2>
+      <p>不一定要现在,什么时候都可以。</p>
+      <div class="warmup-actions">
+        <button class="btn-primary" id="btnFromBrowseToWarmup">我准备好了,开始填</button>
+        <button class="btn-secondary" id="btnBackToWelcomeFromBrowse">回首页</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ========== Output Modal (重构:回信 + 折叠编码) ========== -->
+<div id="output-modal">
+  <div class="modal-box">
+    <h3>谢谢您。我已经认真读完了。</h3>
+
+    <!-- 即时回信卡片 -->
+    <div class="reply-card">
+      <div class="reply-header">
+        <span class="reply-icon">💜</span>
+        <span class="reply-title">这是我读完您写的之后,想跟您说的话</span>
+      </div>
+      <div class="reply-body" id="modal-reply-body">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+    <!-- 三个明确的下一步 -->
+    <div class="next-actions">
+      <h3>接下来您可以——</h3>
+      <button class="next-btn" id="btnRevealEncrypted">
+        <strong>把这份记录发给咨询师做深入分析</strong>
+        <span>展开隐私编码,可复制后发给咨询师</span>
+      </button>
+      <button class="next-btn secondary" id="btnEndDeep">
+        <strong>把这些放在心里,先走一段时间</strong>
+        <span>您来过、说过、被读过。这就够了</span>
+      </button>
+      <button class="next-btn warn" id="btnDeepResources">
+        <strong>我现在需要专业资源</strong>
+        <span>查看心理援助热线和医院</span>
+      </button>
+    </div>
+
+    <!-- 折叠的编码内容(默认隐藏) -->
+    <div class="encrypted-content" id="encrypted-content">
+      <div class="tabs">
+        <button type="button" class="tab active" data-tab="encrypted">🔒 隐私模式(推荐发送)</button>
+        <button type="button" class="tab" data-tab="plain">📄 明文模式(自己核对)</button>
+      </div>
+
+      <div class="tab-panel active" id="panel-encrypted">
+        <div class="tab-tip">
+          <strong>这是什么?</strong> 您的所有回答已被编码成乱码格式。<br>
+          ✓ 老公/同事/家人偶然看到 → <strong>看不出内容</strong><br>
+          ✓ 咨询师收到后 → <strong>可完整还原您的全部回答</strong><br>
+          建议:复制 <code>FMR1.BEGIN</code> 到 <code>FMR1.END</code> 之间的<strong>全部内容</strong>发送。
+        </div>
+        <textarea id="output-text-encrypted" readonly></textarea>
+        <div class="modal-toolbar">
+          <button type="button" class="btn-secondary" id="closeBtn">关闭</button>
+          <button type="button" class="btn-success" id="copyBtnEncrypted">一键复制隐私模式</button>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="panel-plain">
+        <div class="tab-tip">
+          <strong>明文模式</strong>用于您自己核对回答是否正确。<br>
+          ⚠ 此格式包含完整中文内容,<strong>不建议直接发送</strong>。
+        </div>
+        <textarea id="output-text-plain" readonly></textarea>
+        <div class="modal-toolbar">
+          <button type="button" class="btn-secondary" id="closeBtn2">关闭</button>
+          <button type="button" class="btn-secondary" id="copyBtnPlain">复制明文(不推荐)</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ====== Question metadata ======
+  const QUESTIONS = [
+    // 角色
+    { id: 'r1',   key: '填写人角色',                      type: 'radio',  required: true,  page: 1, otherKey: 'r1_other' },
+    { id: 'r2',   key: '主要照料程度',                    type: 'radio',  required: true,  page: 1 },
+    { id: 'r3',   key: '填写动机',                        type: 'radio',  required: true,  page: 1 },
+    // 主诉
+    { id: 'q1a',  key: '此刻情绪词',                      type: 'radio',  required: true,  page: 1, otherKey: 'q1a_other' },
+    { id: 'q1b',  key: '主诉简述',                        type: 'text',   required: true,  page: 1 },
+    { id: 'q1c',  key: '主诉详述',                        type: 'text',   required: false, page: 1 },
+    { id: 'q2',   key: '主要担忧',                        type: 'multi',  required: true,  page: 1, otherKey: 'q2_other' },
+    { id: 'q3',   key: '孩子年龄段',                      type: 'radio',  required: true,  page: 1 },
+    { id: 'q4',   key: '持续时间',                        type: 'radio',  required: true,  page: 1 },
+    { id: 'q5',   key: '此刻的触发',                      type: 'radio',  required: true,  page: 1, otherKey: 'q5_other' },
+    { id: 'q6',   key: '尝试过的方法',                    type: 'text',   required: true,  page: 1 },
+    { id: 'q7',   key: '生活影响程度(1-10)',              type: 'radio',  required: true,  page: 1 },
+    { id: 'q8',   key: '亲子关系评分(1-10)',              type: 'radio',  required: true,  page: 1 },
+    // 关键背景
+    { id: 'q9',   key: '家庭结构',                        type: 'radio',  required: true,  page: 2, otherKey: 'q9_other' },
+    { id: 'q10',  key: '主要管教者',                      type: 'radio',  required: true,  page: 2 },
+    { id: 'q11',  key: '家庭教育共识(1-10)',              type: 'radio',  required: true,  page: 2 },
+    { id: 'q12',  key: '过去一年家庭重大事件',            type: 'multi',  required: true,  page: 2 },
+    { id: 'q13',  key: '家长自身状态',                    type: 'radio',  required: true,  page: 2 },
+    { id: 'q14',  key: '夫妻关系评分(1-10)',              type: 'radio',  required: true,  page: 2 },
+    { id: 'q15',  key: '家长原生家庭氛围',                type: 'radio',  required: true,  page: 2 },
+    { id: 'q16',  key: '孩子睡眠状况',                    type: 'radio',  required: true,  page: 2 },
+    { id: 'q17',  key: '孩子饮食状况',                    type: 'radio',  required: true,  page: 2 },
+    { id: 'q18',  key: '孩子日常状态',                    type: 'radio',  required: true,  page: 2 },
+    { id: 'q19',  key: '补充信息',                        type: 'text',   required: false, page: 2 },
+    { id: 'q19a', key: '问题归因(家长视角)',                type: 'multi',  required: true,  page: 2 },
+    { id: 'q19b', key: '家长互动情绪',                    type: 'multi',  required: true,  page: 2 },
+    // 深度反思
+    { id: 'q20',  key: '孩子未说出的心里话(家长想象)',    type: 'text',   required: true,  page: 3 },
+    { id: 'q21a', key: '家长最怕的画面',                  type: 'text',   required: true,  page: 3 },
+    { id: 'q21b', key: '恐惧的来源',                      type: 'radio',  required: true,  page: 3, otherKey: 'q21b_other' },
+    { id: 'q22',  key: '假如您是孩子的感受',              type: 'text',   required: false, page: 3 },
+    { id: 'free', key: '家长自由倾诉',                    type: 'text',   required: false, page: 3 }
+  ];
+
+  // ====== Helpers ======
+  function $(sel, ctx) { return (ctx || document).querySelector(sel); }
+  function $$(sel, ctx) { return Array.from((ctx || document).querySelectorAll(sel)); }
+
+  function getValue(q) {
+    if (q.type === 'text') {
+      const el = $('[name="' + q.id + '"]');
+      return el ? el.value.trim() : '';
+    }
+    if (q.type === 'radio') {
+      const checked = $('input[name="' + q.id + '"]:checked');
+      if (!checked) return '';
+      let val = checked.value;
+      if (q.otherKey && checked.dataset.other === q.otherKey) {
+        const otherEl = $('[data-other-for="' + q.otherKey + '"]');
+        if (otherEl && otherEl.value.trim()) val += ':' + otherEl.value.trim();
+      }
+      return val;
+    }
+    if (q.type === 'multi') {
+      const group = $('[data-name="' + q.id + '"]');
+      if (!group) return [];
+      const checks = $$('input[type="checkbox"]', group);
+      const vals = [];
+      checks.forEach(c => {
+        if (c.checked) {
+          let v = c.value;
+          if (q.otherKey && c.dataset.other === q.otherKey) {
+            const otherEl = $('[data-other-for="' + q.otherKey + '"]');
+            if (otherEl && otherEl.value.trim()) v += ':' + otherEl.value.trim();
+          }
+          vals.push(v);
+        }
+      });
+      return vals;
+    }
+    return '';
+  }
+
+  function isAnswered(q, val) {
+    if (q.type === 'multi') return val && val.length > 0;
+    return val !== '' && val !== null && val !== undefined;
+  }
+
+  // ====== Progress (模块化:进度条按完成比例填充,但不显示数字) ======
+  function updateProgress() {
+    let answered = 0;
+    QUESTIONS.forEach(q => {
+      if (isAnswered(q, getValue(q))) answered++;
+    });
+    const total = QUESTIONS.length;
+    const pct = Math.round((answered / total) * 100);
+    ['progressFill', 'progressFill2', 'progressFill3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.width = pct + '%';
+    });
+    // 进度文字保留为模块名(已在HTML中静态写死),此处不再覆盖
+  }
+
+  // ====== "Other" toggle ======
+  function setupOtherToggle() {
+    $$('input[type="radio"][data-other]').forEach(input => {
+      input.addEventListener('change', () => {
+        const otherKey = input.dataset.other;
+        const wrap = $('#' + otherKey + '_wrap');
+        if (!wrap) return;
+        const sameName = $$('input[name="' + input.name + '"]');
+        const anyOtherChecked = sameName.some(i => i.checked && i.dataset.other === otherKey);
+        wrap.classList.toggle('show', anyOtherChecked);
+      });
+    });
+    $$('input[type="radio"]').forEach(input => {
+      input.addEventListener('change', () => {
+        if (!input.dataset.other) {
+          const sameName = $$('input[name="' + input.name + '"]');
+          sameName.forEach(i => {
+            if (i.dataset.other) {
+              const wrap = $('#' + i.dataset.other + '_wrap');
+              if (wrap) wrap.classList.remove('show');
+            }
+          });
+        }
+      });
+    });
+    $$('input[type="checkbox"][data-other]').forEach(input => {
+      input.addEventListener('change', () => {
+        const wrap = $('#' + input.dataset.other + '_wrap');
+        if (wrap) wrap.classList.toggle('show', input.checked);
+      });
+    });
+  }
+
+  // ====== Multi-select max ======
+  function setupMultiLimit() {
+    $$('[data-multi="true"]').forEach(group => {
+      const max = parseInt(group.dataset.max || '0', 10);
+      if (!max) return;
+      const checks = $$('input[type="checkbox"]', group);
+      checks.forEach(c => {
+        c.addEventListener('change', () => {
+          const checked = checks.filter(x => x.checked);
+          if (checked.length > max) {
+            c.checked = false;
+            alert('最多只能选 ' + max + ' 项');
+          }
+        });
+      });
+    });
+  }
+
+  // ====== Crisis ======
+  function setupCrisisDetection() {
+    const crisisInputs = $$('input[data-crisis="true"]');
+    const banner = $('#crisisBanner');
+    crisisInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        const anyCrisis = crisisInputs.some(i => i.checked);
+        banner.classList.toggle('show', anyCrisis);
+        if (anyCrisis) banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+  }
+
+  // ====== AI bubbles (preset reflections) ======
+  function setupAIBubbles() {
+    // After Q1a (any choice triggers it)
+    $$('input[name="q1a"]').forEach(input => {
+      input.addEventListener('change', () => {
+        const val = getValue(QUESTIONS.find(q => q.id === 'q1a'));
+        const bubble = $('#ai-after-q1a');
+        if (!bubble) return;
+        // Custom message per emotion
+        const msgMap = {
+          '焦虑': '焦虑这个词,本身就承载了很多。它通常在告诉我们:有件事您还没找到出口。慢慢来,我们陪您。',
+          '难过': '难过是真实的。一个家长会难过,是因为爱在那里。我们先把这份难过接住,再慢慢往下看。',
+          '无力': '无力——这个词最沉。它常常意味着您已经独自扛了很久。这一次,我们陪您。',
+          '生气': '生气是有力量的情绪。它常常在保护一些更深的东西——也许是失望,也许是害怕。我们一起看看。',
+          '困惑': '困惑也是答案的一种。它意味着您没有套用旧答案,而是在认真寻找新的理解。',
+          '担心': '担心是爱的一种形式。它让我们格外敏感地接收孩子的信号。',
+          '麻木': '麻木——这是非常诚实的一个词。它常常意味着您已经累到不知道该感觉什么了。请允许自己今天不"应该"。',
+          '自责': '自责往往不是您做错了,而是您在乎得太用力。我们今天试着把"自责"换成"心疼自己"。',
+          '还好': '"还好"是中国家长最常用的词。我们听到了它,也听到了它后面没说的话。'
+        };
+        bubble.textContent = msgMap[val] || '看到您选的这个词了。这种感觉先放在这里,我们陪您。';
+        bubble.classList.add('show');
+      });
+    });
+
+    // After Q2 (担忧多选,选了至少一项就显示)
+    $$('[data-name="q2"] input[type="checkbox"]').forEach(input => {
+      input.addEventListener('change', () => {
+        const vals = getValue(QUESTIONS.find(q => q.id === 'q2'));
+        const bubble = $('#ai-after-q2');
+        if (!bubble) return;
+        if (vals && vals.length > 0) {
+          if (vals.some(v => v.indexOf('自我攻击') >= 0)) {
+            bubble.innerHTML = '我们注意到您勾选了一项需要被特别认真对待的内容。<br>请相信您的直觉——您来这里,这一步本身就是在保护孩子。';
+          } else {
+            bubble.textContent = '您勾选的这些,我们看到了。一项一项,都放在心上。';
+          }
+          bubble.classList.add('show');
+        } else {
+          bubble.classList.remove('show');
+        }
+      });
+    });
+
+    // After Q7 (生活影响 >= 7)
+    $$('input[name="q7"]').forEach(input => {
+      input.addEventListener('change', () => {
+        const val = parseInt(getValue(QUESTIONS.find(q => q.id === 'q7')), 10);
+        const bubble = $('#ai-after-q7');
+        if (!bubble) return;
+        if (val >= 7) {
+          bubble.innerHTML = '您打了一个不轻的分数——这意味着这件事已经不只是孩子的事,它在您身上也很重。<br>请允许自己,也是被关心的人。';
+          bubble.classList.add('show');
+        } else if (val >= 4) {
+          bubble.innerHTML = '中等的分数,常常意味着"撑得住,但不轻松"。<br>请记得在陪孩子之前,先给自己留一点空间。';
+          bubble.classList.add('show');
+        } else {
+          bubble.classList.remove('show');
+        }
+      });
+    });
+
+    // After Q15 (原生家庭非温暖)
+    $$('input[name="q15"]').forEach(input => {
+      input.addEventListener('change', () => {
+        const val = getValue(QUESTIONS.find(q => q.id === 'q15'));
+        const bubble = $('#ai-after-q15');
+        if (!bubble) return;
+        if (val && val !== '温暖、放松') {
+          if (val === '不想回忆') {
+            bubble.innerHTML = '"不想回忆"是一个很重的答案。我们不会追问。<br>但您今天能填这份问卷,本身就说明:您已经在做和上一辈不一样的事了。';
+          } else {
+            bubble.innerHTML = '谢谢您愿意回想这一题。我们会在报告里小心地处理它——<br>因为您今天能填这份问卷,本身就说明:您已经在做和上一辈不一样的事了。';
+          }
+          bubble.classList.add('show');
+        } else {
+          bubble.classList.remove('show');
+        }
+      });
+    });
+
+    // After Q19a (归因多选,选了至少一项就显示)
+    $$('[data-name="q19a"] input[type="checkbox"]').forEach(input => {
+      input.addEventListener('change', () => {
+        const group = $('[data-name="q19a"]');
+        const checks = $$('input[type="checkbox"]', group);
+        const anyChecked = checks.some(c => c.checked);
+        const bubble = $('#ai-after-q19a');
+        if (!bubble) return;
+        if (anyChecked) {
+          const selfChecked = checks.some(c => c.checked && c.value.indexOf('我自己') >= 0);
+          if (selfChecked) {
+            bubble.innerHTML = '您勾了"我自己"——能这样看,本身就说明您的觉察力很强。<br>我们不会用这个来评判您,只会用它来帮您找到更舒服的方式。';
+          } else {
+            bubble.textContent = '谢谢您的坦诚。您怎么看这个问题,本身就是很重要的信息——它帮助我们理解整个家的互动模式,而不是去找"谁对谁错"。';
+          }
+          bubble.classList.add('show');
+        } else {
+          bubble.classList.remove('show');
+        }
+      });
+    });
+  }
+
+  // ====== Page navigation ======
+  function showScreen(id) {
+    $$('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function validatePage(pageNum) {
+    const errors = [];
+    QUESTIONS.filter(q => q.page === pageNum && q.required).forEach(q => {
+      const qDom = document.querySelector('[data-q="' + q.id + '"]');
+      if (qDom) qDom.classList.remove('error');
+      if (!isAnswered(q, getValue(q))) {
+        errors.push(q.id);
+        if (qDom) qDom.classList.add('error');
+      }
+    });
+    if (errors.length > 0) {
+      alert('本部分还有 ' + errors.length + ' 道必答题未完成,已用红色标出。');
+      const firstErr = $('.question.error');
+      if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return false;
+    }
+    return true;
+  }
+
+  // ====== UTF-8 safe Base64 encoding ======
+  function utf8ToBase64(str) {
+    // Encode UTF-8 string (containing Chinese) to Base64 reliably
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+
+  // ====== Question metadata for structured output ======
+  const QUESTION_META = {
+    r1:   { title: '您是孩子的' },
+    r2:   { title: '您是孩子的主要照料者吗？' },
+    r3:   { title: '您今天填这份问卷的动机' },
+    q1a:  { title: '用一个词形容您此刻的感觉' },
+    q1b:  { title: '这个感觉主要是因为孩子的什么事？' },
+    q1c:  { title: '补充细节描述' },
+    q2:   { title: '您最担心的是哪些方面？(最多3项)' },
+    q3:   { title: '孩子目前的年龄段' },
+    q4:   { title: '这种情况持续多久了？' },
+    q5:   { title: '是什么让您今天来到这里？' },
+    q6:   { title: '到目前为止您试过哪些方法？效果怎么样？' },
+    q7:   { title: '这件事对您整个生活的影响有多大？', scale: '1=偶尔烦一下 → 10=已经睡不着、上不了班' },
+    q8:   { title: '您觉得现在和孩子的关系有几分？', scale: '1=形同陌路/一说话就吵 → 10=无话不谈' },
+    q9:   { title: '孩子和谁一起生活？' },
+    q10:  { title: '家里谁主要管教孩子？' },
+    q11:  { title: '在教育孩子上，家庭成员意见统一吗？', scale: '1=经常因此吵架 → 10=高度一致' },
+    q12:  { title: '过去一年家里发生过这些事吗？(可多选)' },
+    q13:  { title: '您自己最近的状态怎么样？' },
+    q14:  { title: '您和伴侣的关系怎么样？', scale: '1=几乎没话/天天吵 → 10=很好' },
+    q15:  { title: '您小时候家里的氛围是？' },
+    q16:  { title: '孩子最近的睡眠？' },
+    q17:  { title: '孩子最近吃饭？' },
+    q18:  { title: '孩子大部分时间在做什么？' },
+    q19:  { title: '还有什么想告诉我们的？' },
+    q19a: { title: '在您看来，当前问题主要跟谁的行为或状态有关？(可多选)' },
+    q19b: { title: '您日常和孩子互动时最常感受到的情绪？(可多选，最多3项)' },
+    q20:  { title: '如果您能听到孩子心里没说出来的一句话，您觉得会是什么？' },
+    q21a: { title: '如果让您说"我最怕孩子变成什么样"，您脑子里第一个画面是？' },
+    q21b: { title: '这个画面让您想起谁、想起什么时候？' },
+    q22:  { title: '如果您是孩子，每天回到这个家，最大的感受会是什么？' },
+    free: { title: '家长自由倾诉(只读不分析)' }
+  };
+
+  // ====== Build structured data object (for encryption) ======
+  function buildDataObject() {
+    const data = {};
+    QUESTIONS.forEach(q => {
+      const v = getValue(q);
+      const meta = QUESTION_META[q.id] || {};
+      const entry = { title: meta.title || q.key };
+      if (meta.scale) entry.scale = meta.scale;
+      if (q.type === 'multi') {
+        entry.value = v;
+      } else {
+        entry.value = v;
+      }
+      data[q.id] = entry;
+    });
+    return data;
+  }
+
+  // ====== Wrap encoded payload with line breaks every N chars ======
+  function chunkString(s, n) {
+    const out = [];
+    for (let i = 0; i < s.length; i += n) {
+      out.push(s.substring(i, i + n));
+    }
+    return out.join('\n');
+  }
+
+  // ============================================================
+  // ====== Reply Templates (14 段预写模板) ======
+  // ============================================================
+
+  // 9 段情绪基础模板(由 q1a 路由)
+  const EMOTION_REPLIES = {
+    '焦虑': '看到您选了"焦虑"。读到您说的——"{q1b}"。\n\n焦虑这个词本身就承载了很多。它通常意味着:\n有件事您还没找到出口,但又没办法假装它不存在。\n\n我没有要马上给您"怎么办"——\n因为焦虑的人最不需要的,就是又一份"应该做什么"的清单。\n\n我想让您先知道一件事:**您写下来,本身就是一种喘息。**\n那个不停在转的"应该做什么"的脑子,今天可以暂时关一下。',
+
+    '难过': '看到您选了"难过"。读到您说的——"{q1b}"。\n\n一个家长会难过,**是因为爱在那里**。不爱的人,不会难过。\n\n难过不需要被解决。它需要的是被看见,然后慢慢地、自己走过去。\n\n您今天来到这里,说出了一些可能您之前\n没机会跟任何人说的话。这本身就是一件不容易的事。',
+
+    '无力': '看到您选了"无力"。读到您说的——"{q1b}"。\n\n无力——这个词最沉。它常常意味着您已经独自扛了很久,\n试过很多办法,但都像石子扔进湖里——有声响,没回声。\n\n我想让您先知道:**今天您愿意来到这里,不是因为您没用,而是因为您还在找出路。**\n\n能在这种状态下还来找出路的人,不是软弱的人。',
+
+    '生气': '看到您选了"生气"。读到您说的——"{q1b}"。\n\n生气是有力量的情绪。它常常在保护一些更深的东西——\n也许是失望,也许是害怕,也许是觉得自己没被看见。\n\n愤怒底下,通常都有一个伤口。\n那个伤口可能在孩子身上,也可能在更早的地方。\n\n今天先不急着想"怎么不生气"。**先承认它在那里。它在,是有原因的。**',
+
+    '困惑': '看到您选了"困惑"。读到您说的——"{q1b}"。\n\n困惑也是答案的一种。它意味着您没有套用旧答案,\n而是在认真寻找新的理解。\n\n很多家长会习惯性地下结论——"孩子就是叛逆""都是手机的错"\n"我太宠了""我太严了"。这些结论让人安心,但通常不准。\n\n**您选择了"困惑"而不是结论,说明您愿意先停下来想一想。**\n这是一件比看上去更难的事。',
+
+    '担心': '看到您选了"担心"。读到您说的——"{q1b}"。\n\n担心是爱的一种形式。它让我们格外敏感地接收孩子的信号。\n\n但担心如果太满,有时候会变成另一种东西——\n变成监视、变成催促、变成预设最坏。\n孩子能感受到我们的担心,\n也能感受到担心背后的"我不相信你"。\n\n这不是您的错。是担心这种情绪本身的特点——\n它让人想"做点什么",但**有时候最好的"做",其实是先暂停一下**。',
+
+    '麻木': '看到您选了"麻木"。读到您说的——"{q1b}"。\n\n麻木——这是非常诚实的一个词。比"还好"诚实多了。\n\n它常常意味着您已经累到不知道该感觉什么了。\n连难过都觉得多余,连生气都觉得费力。\n\n**请允许自己今天不"应该"**。\n不应该坚强、不应该理智、不应该"为了孩子"再撑一下。\n\n您写下"麻木"这两个字,已经是今天对自己最大的诚实了。',
+
+    '自责': '看到您选了"自责"。读到您说的——"{q1b}"。\n\n自责往往不是因为您做错了什么,**而是因为您在乎得太用力**。\n\n不在乎的人,不会自责。甩锅的人,不会自责。\n跟孩子断了联系的人,不会自责。\n\n您还在自责,说明您还在努力,还相信"我可以做得更好"。\n\n但今天我想跟您说一件事:**做得"够好"不等于"完美"**。\n您不需要把自己责怪到连陪孩子的力气都没有了。',
+
+    '还好': '看到您选了"还好"。读到您说的——"{q1b}"。\n\n"还好"是中国家长最常用的词。它通常不是真的"好",\n而是"我还能撑"、"我不想说"、\n"我也不知道我到底怎么样了"。\n\n**我们听到了"还好"两个字,也听到了它后面没说的话。**\n\n您不需要现在就把那些话说出来。\n但您愿意走到这一步——点开这个网页,选一个词,写下一句话——\n说明心里有什么东西想出来。\n\n它会出来的,不急。'
+  };
+
+  // 兜底模板(用户自填了"其他"情绪词)
+  const EMOTION_REPLY_OTHER =
+    '看到您写下的这个词。读到您说的——"{q1b}"。\n\n每一个家长走到这里的状态都不一样。\n您选择用您自己的词来形容此刻,\n说明您不愿意用那些"标准答案"来概括自己。\n\n这是一种诚实。我们陪您慢慢走。';
+
+  // 4 段快速版结尾(由 quick-want 路由)
+  const QUICK_ENDINGS = {
+    '听': '\n\n您没有要别人评判,只是想被听见。这件事,我们记下来了。\n\n如果您今天就想到这里,那就到这里。\n**您来过,说过,被读过。今天就够了。**',
+
+    '角度': '\n\n您愿意听不一样的角度,说明您还在寻找。\n\n但今天这几行字还不够我们把"角度"给您——\n真正有用的角度,需要更细一点的对话。\n\n如果您愿意,完整版的问卷会陪您把这件事一层一层拆开看。\n**不是给您一个答案,是给您几个可能的视角,让您自己挑。**',
+
+    '怎么办': '\n\n您想要"接下来怎么办"——这是最自然的需求,\n但也是我今天最不会做的事。\n\n不是不愿意,是真的不行。基于您写的几行字就给"该怎么做",\n那些建议大概率是错的,甚至会让您更焦虑。\n\n如果您愿意往下走,完整版的问卷会让我们看清楚——\n**然后"该怎么做"才不是猜出来的**。',
+
+    '专业': '\n\n您愿意承认"我可能需要专业帮助"——**这本身就是一种力量**。\n很多人扛到最后才肯说这句话,但您今天就说了。\n\n我想现在就给您几个具体的电话和资源。\n您不需要立刻打,存下来,知道在那里就行。\n\n<RESOURCE_BLOCK>\n\n您不需要独自面对这件事。'
+  };
+
+  // 深度版通用结尾(完整 28 题之后)
+  const DEEP_ENDING =
+    '\n\n您完整地走完了这份问卷——这本身就是一种力量。\n\n能在情绪里坐这么久而不逃跑的人,\n不是没事的人,是有底气的人。\n\n您写下的这些,我们都看到了。\n**有几条线索值得花时间一起看,但更详细的解读需要更耐心的对话。**\n\n如果您愿意把这份记录发给咨询师,\n您会拿到一份针对您的具体分析。\n\n但您也可以选择今天就到这里——您来过、说过、被读过。\n那已经是这个家最重要的一件事。';
+
+  // 危机模板(crisis=true 时优先使用)
+  const CRISIS_REPLY =
+    '我先停下来,把一件事说在最前面。\n\n您在问卷里勾选的内容,让我必须**优先告诉您几个具体的资源**。\n请把它们存下来——不一定立刻用,但知道在那里就行。\n\n<RESOURCE_BLOCK>\n\n**您不需要独自面对这件事。**\n\n下面是基于您写的内容,我想跟您说的话——\n\n';
+
+  // 资源块的 HTML(单独使用,emoji 例外允许)
+  const RESOURCE_BLOCK_HTML =
+    '<div class="resource-block">' +
+    '📞 全国 24h 心理援助热线:<strong>400-161-9995</strong><br>' +
+    '📞 北京危机干预中心:<strong>010-82951332</strong><br>' +
+    '🏥 北医六院 儿童青少年精神科<br>' +
+    '🏥 各省市精神卫生中心' +
+    '</div>';
+
+  // ====== 渲染回信(把模板填入插槽,转 HTML) ======
+  function renderReply(emotionKey, q1bText, endingKey, crisis) {
+    let tpl;
+    if (emotionKey === 'OTHER' || !EMOTION_REPLIES[emotionKey]) {
+      tpl = EMOTION_REPLY_OTHER;
+    } else {
+      tpl = EMOTION_REPLIES[emotionKey];
+    }
+    const safeQ1b = (q1bText && q1bText.trim()) ? q1bText.trim() : '您写下的那段话';
+
+    let body = tpl.replace(/\{q1b\}/g, safeQ1b);
+
+    if (endingKey && QUICK_ENDINGS[endingKey]) {
+      body += QUICK_ENDINGS[endingKey];
+    } else if (endingKey === 'deep') {
+      body += DEEP_ENDING;
+    }
+
+    // 危机模式:把危机模板拼在最前面
+    if (crisis) {
+      body = CRISIS_REPLY + body;
+    }
+
+    // 转 HTML:换行->br, **粗体**->strong, <RESOURCE_BLOCK> 替换
+    let html = body
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    // 注意:转义后再做 marker 替换
+    html = html.replace(/&lt;RESOURCE_BLOCK&gt;/g, RESOURCE_BLOCK_HTML);
+    html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\n/g, '<br>');
+    return html;
+  }
+
+  // ============================================================
+  // ====== Quick Path 逻辑 ======
+  // ============================================================
+
+  let quickState = {
+    q1a: '',
+    q1aOther: '',
+    q1b: '',
+    want: ''
+  };
+
+  function showQuickStep(stepId) {
+    document.querySelectorAll('.quick-step').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(stepId);
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  function getQuickEmotionKey() {
+    // 如果用户选了 9 个标准选项之一,用 q1a;否则若 other 有值,返回 'OTHER';否则返回 ''
+    if (quickState.q1a && EMOTION_REPLIES[quickState.q1a]) return quickState.q1a;
+    if (quickState.q1aOther) return 'OTHER';
+    return '';
+  }
+
+  function generateQuickReply() {
+    const emotionKey = getQuickEmotionKey();
+    const q1b = quickState.q1b;
+    const want = quickState.want;
+    // 快速版没有 crisis 字段(没填到 q2),但若 want='专业' 则在结尾里已经包含资源
+    const html = renderReply(
+      emotionKey === 'OTHER' ? 'OTHER' : emotionKey,
+      q1b,
+      want,
+      false
+    );
+    document.getElementById('quick-reply-body').innerHTML = html;
+    showQuickStep('quick-step-result');
+  }
+
+  // 把快速版数据迁移到完整版(填入对应表单字段)
+  function migrateQuickToFull() {
+    // q1a
+    if (quickState.q1a && EMOTION_REPLIES[quickState.q1a]) {
+      const radio = document.querySelector('input[name="q1a"][value="' + quickState.q1a + '"]');
+      if (radio) {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    } else if (quickState.q1aOther) {
+      const otherRadio = document.querySelector('input[name="q1a"][value="其他"]');
+      if (otherRadio) {
+        otherRadio.checked = true;
+        otherRadio.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      const otherInput = document.querySelector('[data-other-for="q1a_other"]');
+      if (otherInput) otherInput.value = quickState.q1aOther;
+    }
+    // q1b
+    const q1bEl = document.querySelector('[name="q1b"]');
+    if (q1bEl && quickState.q1b) q1bEl.value = quickState.q1b;
+  }
+
+  function setupQuickPath() {
+    // Step 1: 选完情绪词自动跳到 step 2
+    document.querySelectorAll('input[name="quick-q1a"]').forEach(input => {
+      input.addEventListener('change', () => {
+        if (input.checked) {
+          quickState.q1a = input.value;
+          quickState.q1aOther = '';
+          // 略停顿一下再跳,让用户看到选中反馈
+          setTimeout(() => showQuickStep('quick-step-2'), 250);
+        }
+      });
+    });
+    // 自填情绪词
+    const otherInput = document.getElementById('quick-q1a-other');
+    if (otherInput) {
+      otherInput.addEventListener('input', () => {
+        quickState.q1aOther = otherInput.value.trim();
+        // 清除 radio 选中
+        document.querySelectorAll('input[name="quick-q1a"]').forEach(r => r.checked = false);
+        quickState.q1a = '';
+      });
+      // 用户在 other 输入完后,需要主动点下一步(否则无法判断他写完了)
+      // 我们在 step 1 没有"下一步"按钮,所以加一个监听:回车键提交
+      otherInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && quickState.q1aOther) {
+          e.preventDefault();
+          showQuickStep('quick-step-2');
+        }
+      });
+    }
+    // Step 1 回首页
+    document.getElementById('btnQuickBack1').addEventListener('click', () => {
+      showScreen('screen-welcome');
+    });
+
+    // Step 2: 上一步 / 下一步
+    document.getElementById('btnQuickBack2').addEventListener('click', () => {
+      showQuickStep('quick-step-1');
+    });
+    document.getElementById('btnQuickNext2').addEventListener('click', () => {
+      const text = document.getElementById('quick-q1b').value.trim();
+      if (!text) {
+        alert('请写一两句话,描述发生了什么。');
+        return;
+      }
+      quickState.q1b = text;
+      showQuickStep('quick-step-3');
+    });
+
+    // Step 3: 选完即提交
+    document.querySelectorAll('input[name="quick-want"]').forEach(input => {
+      input.addEventListener('change', () => {
+        if (input.checked) {
+          quickState.want = input.value;
+          // 略停顿一下再生成回应
+          setTimeout(() => generateQuickReply(), 350);
+        }
+      });
+    });
+    document.getElementById('btnQuickBack3').addEventListener('click', () => {
+      showQuickStep('quick-step-2');
+    });
+
+    // Result 三个出口
+    document.getElementById('btnQuickToFull').addEventListener('click', () => {
+      migrateQuickToFull();
+      showScreen('screen-page1');
+    });
+    document.getElementById('btnQuickEnd').addEventListener('click', () => {
+      // 简单地回首页
+      if (confirm('确定要离开了吗?您可以随时回来。')) {
+        // 重置快速版状态
+        quickState = { q1a: '', q1aOther: '', q1b: '', want: '' };
+        showScreen('screen-welcome');
+      }
+    });
+    document.getElementById('btnQuickResources').addEventListener('click', () => {
+      // 把回应区域替换为纯资源页
+      const body = document.getElementById('quick-reply-body');
+      body.innerHTML =
+        '<strong>这里是我们能想到的、最有用的几条专业资源。</strong><br><br>' +
+        RESOURCE_BLOCK_HTML +
+        '<br>这些机构都接受电话咨询,部分提供线上服务。' +
+        '<br>如您身边有信任的人,告诉他/她您正在做这件事,会让这一步更有力量。' +
+        '<br><br><strong>您不需要独自面对这件事。</strong>';
+    });
+  }
+
+  // ====== Generate output ======
+  function generateOutput() {
+    if (!validatePage(3)) return;
+
+    const now = new Date();
+    const ts = now.getFullYear() + '-' +
+               String(now.getMonth() + 1).padStart(2, '0') + '-' +
+               String(now.getDate()).padStart(2, '0') + ' ' +
+               String(now.getHours()).padStart(2, '0') + ':' +
+               String(now.getMinutes()).padStart(2, '0');
+
+    let crisisFlag = false;
+    if ($$('input[data-crisis="true"]').some(i => i.checked)) crisisFlag = true;
+
+    // Detect role for prompt hint
+    const roleVal = getValue(QUESTIONS.find(q => q.id === 'r1')) || '未填写';
+    let toneHint = '温柔且锋利,共情但带洞察';
+    if (roleVal === '妈妈') toneHint = '温柔治愈型(共情多一些,语言柔和)';
+    else if (roleVal === '爸爸') toneHint = '理性专业型(直接,逻辑清晰,但仍要共情)';
+    else if (roleVal.indexOf('奶奶') >= 0 || roleVal.indexOf('外婆') >= 0 || roleVal.indexOf('爷爷') >= 0 || roleVal.indexOf('外公') >= 0) {
+      toneHint = '尊重 + 代际理解(温和,看见两代人的差异)';
+    }
+
+    // ============ PLAIN TEXT (for self-review) ============
+    let plain = '';
+    plain += '═══════════════════════════════════════\n';
+    plain += '  家的镜子 · 第一次照面 · 问卷答案\n';
+    plain += '  填写时间:' + ts + '\n';
+    plain += '  填写人角色:' + roleVal + '\n';
+    plain += '  建议回信语气:' + toneHint + '\n';
+    if (crisisFlag) {
+      plain += '  ⚠ 危机信号:已勾选「自我攻击」相关项\n';
+      plain += '  ⚠ 处理优先级:HIGH\n';
+    }
+    plain += '═══════════════════════════════════════\n\n';
+
+    plain += '【角色与处境】\n\n';
+    QUESTIONS.filter(q => ['r1','r2','r3'].indexOf(q.id) >= 0).forEach(q => {
+      plain += formatAnswer(q);
+    });
+
+    plain += '\n【第一部分 · 主诉】\n\n';
+    QUESTIONS.filter(q => ['q1a','q1b','q1c','q2','q3','q4','q5','q6','q7','q8'].indexOf(q.id) >= 0).forEach(q => {
+      plain += formatAnswer(q);
+    });
+
+    plain += '\n【第二部分 · 关键背景】\n\n';
+    QUESTIONS.filter(q => ['q9','q10','q11','q12','q13','q14','q15','q16','q17','q18','q19'].indexOf(q.id) >= 0).forEach(q => {
+      plain += formatAnswer(q);
+    });
+
+    plain += '\n【第三部分 · 深度反思】\n\n';
+    QUESTIONS.filter(q => ['q20','q21a','q21b','q22'].indexOf(q.id) >= 0).forEach(q => {
+      plain += formatAnswer(q);
+    });
+
+    const freeVal = getValue(QUESTIONS.find(q => q.id === 'free'));
+    if (freeVal) {
+      plain += '\n【家长的自由倾诉(只读不分析,但可作为情感参考)】\n\n';
+      plain += '   ' + freeVal.split('\n').join('\n   ') + '\n\n';
+    }
+
+    plain += '\n═══════════════════════════════════════\n';
+    plain += '请咨询师按「家的镜子」初诊报告结构生成回信:\n';
+    plain += '  ① 共情 + 重述(用家长原话)\n';
+    plain += '  ② 多元假设(给出 3-4 个并行方向)\n';
+    plain += '  ③ 理念输出(孩子是家的体温计)\n';
+    plain += '  ④ 一件本周可以做的小事\n';
+    plain += '  ⑤ 邀请进入下一阶段\n';
+    plain += '═══════════════════════════════════════\n';
+
+    // ============ ENCRYPTED (Base64-encoded JSON) ============
+    const dataObj = {
+      v: 2,                  // schema version (v2: answers include title/scale/value)
+      ts: ts,                // timestamp
+      role: roleVal,         // role (kept in plaintext header for AI tone hint)
+      tone: toneHint,        // tone suggestion
+      crisis: crisisFlag,    // crisis flag
+      answers: buildDataObject()
+    };
+    const json = JSON.stringify(dataObj);
+    const b64 = utf8ToBase64(json);
+    const wrapped = chunkString(b64, 64);
+
+    let encrypted = '';
+    encrypted += '═══════════════════════════════════════\n';
+    encrypted += '  🔒 家的镜子 · 加密问卷数据 v2\n';
+    encrypted += '  填写时间:' + ts + '\n';
+    encrypted += '  填写人:' + roleVal + '\n';
+    if (crisisFlag) encrypted += '  ⚠ 优先级:HIGH\n';
+    encrypted += '═══════════════════════════════════════\n\n';
+    encrypted += 'FMR1.BEGIN\n';
+    encrypted += wrapped + '\n';
+    encrypted += 'FMR1.END\n\n';
+    encrypted += '═══════════════════════════════════════\n';
+    encrypted += '  ↑ 请将以上全部内容(含 BEGIN/END 标记)\n';
+    encrypted += '    复制并发送给您的咨询师\n';
+    encrypted += '  ↑ 咨询师工具将自动解码并解读\n';
+    encrypted += '═══════════════════════════════════════\n';
+
+    // Set both panels
+    $('#output-text-plain').value = plain;
+    $('#output-text-encrypted').value = encrypted;
+
+    // ============ 即时回信(深度版结尾) ============
+    const q1aEntry = QUESTIONS.find(q => q.id === 'q1a');
+    const q1bEntry = QUESTIONS.find(q => q.id === 'q1b');
+    const q1aVal = getValue(q1aEntry);
+    const q1bVal = getValue(q1bEntry);
+
+    // q1aVal 可能是 "焦虑" 或 "其他:xxx" 形式;只取冒号前的部分
+    const q1aBase = q1aVal.split(':')[0];
+    let emotionKey = EMOTION_REPLIES[q1aBase] ? q1aBase : 'OTHER';
+
+    const replyHtml = renderReply(emotionKey, q1bVal, 'deep', crisisFlag);
+    $('#modal-reply-body').innerHTML = replyHtml;
+
+    // 重置编码内容为折叠状态(每次提交都是新的)
+    $('#encrypted-content').classList.remove('show');
+
+    // Default to encrypted tab
+    switchTab('encrypted');
+
+    $('#output-modal').classList.add('show');
+  }
+
+  // ====== Tab switching ======
+  function switchTab(tabName) {
+    $$('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName));
+    $$('.tab-panel').forEach(p => {
+      p.classList.toggle('active', p.id === 'panel-' + tabName);
+    });
+  }
+
+  function formatAnswer(q) {
+    const val = getValue(q);
+    let line = '【' + q.id.toUpperCase() + '】' + q.key + '\n';
+    if (q.type === 'multi') {
+      if (!val || val.length === 0) {
+        line += '   (未作答)\n\n';
+      } else {
+        val.forEach(v => { line += '   • ' + v + '\n'; });
+        line += '\n';
+      }
+    } else if (q.type === 'text') {
+      if (!val) {
+        line += '   (未作答)\n\n';
+      } else {
+        const indented = val.split('\n').map(l => '   ' + l).join('\n');
+        line += indented + '\n\n';
+      }
+    } else {
+      line += '   ' + (val || '(未作答)') + '\n\n';
+    }
+    return line;
+  }
+
+  // ====== Copy ======
+  function copyText(textareaId, btnId) {
+    const ta = $('#' + textareaId);
+    if (!ta) return;
+    ta.select();
+    ta.setSelectionRange(0, 999999);
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) {}
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(ta.value).then(() => {
+        showCopySuccess(btnId);
+      }).catch(() => {
+        if (ok) showCopySuccess(btnId);
+        else alert('复制失败,请长按文本框手动选择全部并复制。');
+      });
+    } else if (ok) {
+      showCopySuccess(btnId);
+    } else {
+      alert('您的浏览器不支持自动复制,请长按文本框手动选择全部并复制。');
+    }
+  }
+  function showCopySuccess(btnId) {
+    const btn = $('#' + btnId);
+    if (!btn) return;
+    const original = btn.textContent;
+    const originalBg = btn.style.background;
+    btn.textContent = '✓ 已复制';
+    btn.style.background = '#7ba88f';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.style.background = originalBg;
+      btn.style.color = '';
+    }, 2000);
+  }
+
+  // ====== Init ======
+  document.addEventListener('DOMContentLoaded', () => {
+    setupOtherToggle();
+    setupMultiLimit();
+    setupCrisisDetection();
+    setupAIBubbles();
+    setupQuickPath();
+
+    document.addEventListener('input', updateProgress);
+    document.addEventListener('change', updateProgress);
+
+    // Triage cards: red=快速通道, yellow=完整版(走深呼吸页), green=浏览
+    $$('.triage-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const t = card.dataset.triage;
+        if (t === 'urgent') {
+          // 红色入口直接进快速通道(无深呼吸页)
+          showScreen('screen-quick');
+          showQuickStep('quick-step-1');
+        } else if (t === 'full') {
+          showScreen('screen-warmup');
+        } else if (t === 'browse') {
+          showScreen('screen-browse');
+        }
+      });
+    });
+
+    $('#btnStartFromWarmup').addEventListener('click', () => showScreen('screen-page1'));
+    $('#btnSkipWarmup').addEventListener('click', () => showScreen('screen-page1'));
+    $('#btnFromBrowseToWarmup').addEventListener('click', () => showScreen('screen-warmup'));
+    $('#btnBackToWelcomeFromBrowse').addEventListener('click', () => showScreen('screen-welcome'));
+    $('#btnBackToWelcome').addEventListener('click', () => {
+      if (confirm('确定要回首页吗?当前的回答会保留。')) showScreen('screen-welcome');
+    });
+    $('#btnGoPage2').addEventListener('click', () => {
+      if (validatePage(1)) showScreen('screen-page2');
+    });
+    $('#btnBackToPage1').addEventListener('click', () => showScreen('screen-page1'));
+    $('#btnGoPage3').addEventListener('click', () => {
+      if (validatePage(2)) showScreen('screen-page3');
+    });
+    $('#btnBackToPage2').addEventListener('click', () => showScreen('screen-page2'));
+
+    $('#submitBtn').addEventListener('click', generateOutput);
+    $('#copyBtnEncrypted').addEventListener('click', () => copyText('output-text-encrypted', 'copyBtnEncrypted'));
+    $('#copyBtnPlain').addEventListener('click', () => copyText('output-text-plain', 'copyBtnPlain'));
+    $('#closeBtn').addEventListener('click', () => $('#output-modal').classList.remove('show'));
+    $('#closeBtn2').addEventListener('click', () => $('#output-modal').classList.remove('show'));
+
+    // 出口的三个按钮
+    $('#btnRevealEncrypted').addEventListener('click', () => {
+      $('#encrypted-content').classList.add('show');
+      // 滚动到编码区
+      setTimeout(() => {
+        const el = $('#encrypted-content');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    });
+    $('#btnEndDeep').addEventListener('click', () => {
+      if (confirm('确定要离开了吗?这份记录在您关闭页面后将不再保留。')) {
+        $('#output-modal').classList.remove('show');
+        showScreen('screen-welcome');
+      }
+    });
+    $('#btnDeepResources').addEventListener('click', () => {
+      // 把回信区替换为资源页
+      const body = $('#modal-reply-body');
+      body.innerHTML =
+        '<strong>这里是我们能想到的、最有用的几条专业资源。</strong><br><br>' +
+        RESOURCE_BLOCK_HTML +
+        '<br>这些机构都接受电话咨询,部分提供线上服务。' +
+        '<br>如您身边有信任的人,告诉他/她您正在做这件事,会让这一步更有力量。' +
+        '<br><br><strong>您不需要独自面对这件事。</strong>';
+    });
+
+    $$('.tab').forEach(t => {
+      t.addEventListener('click', () => switchTab(t.dataset.tab));
+    });
+    $('#output-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'output-modal') {
+        $('#output-modal').classList.remove('show');
+      }
+    });
+
+    updateProgress();
+  });
+</script>
+</body>
+</html>
