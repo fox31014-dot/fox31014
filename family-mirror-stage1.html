@@ -1616,16 +1616,55 @@
     return btoa(unescape(encodeURIComponent(str)));
   }
 
+  // ====== Question metadata for structured output ======
+  const QUESTION_META = {
+    r1:   { title: '您是孩子的' },
+    r2:   { title: '您是孩子的主要照料者吗？' },
+    r3:   { title: '您今天填这份问卷的动机' },
+    q1a:  { title: '用一个词形容您此刻的感觉' },
+    q1b:  { title: '这个感觉主要是因为孩子的什么事？' },
+    q1c:  { title: '补充细节描述' },
+    q2:   { title: '您最担心的是哪些方面？(最多3项)' },
+    q3:   { title: '孩子目前的年龄段' },
+    q4:   { title: '这种情况持续多久了？' },
+    q5:   { title: '是什么让您今天来到这里？' },
+    q6:   { title: '到目前为止您试过哪些方法？效果怎么样？' },
+    q7:   { title: '这件事对您整个生活的影响有多大？', scale: '1=偶尔烦一下 → 10=已经睡不着、上不了班' },
+    q8:   { title: '您觉得现在和孩子的关系有几分？', scale: '1=形同陌路/一说话就吵 → 10=无话不谈' },
+    q9:   { title: '孩子和谁一起生活？' },
+    q10:  { title: '家里谁主要管教孩子？' },
+    q11:  { title: '在教育孩子上，家庭成员意见统一吗？', scale: '1=经常因此吵架 → 10=高度一致' },
+    q12:  { title: '过去一年家里发生过这些事吗？(可多选)' },
+    q13:  { title: '您自己最近的状态怎么样？' },
+    q14:  { title: '您和伴侣的关系怎么样？', scale: '1=几乎没话/天天吵 → 10=很好' },
+    q15:  { title: '您小时候家里的氛围是？' },
+    q16:  { title: '孩子最近的睡眠？' },
+    q17:  { title: '孩子最近吃饭？' },
+    q18:  { title: '孩子大部分时间在做什么？' },
+    q19:  { title: '还有什么想告诉我们的？' },
+    q19a: { title: '在您看来，当前问题主要跟谁的行为或状态有关？(可多选)' },
+    q19b: { title: '您日常和孩子互动时最常感受到的情绪？(可多选，最多3项)' },
+    q20:  { title: '如果您能听到孩子心里没说出来的一句话，您觉得会是什么？' },
+    q21a: { title: '如果让您说"我最怕孩子变成什么样"，您脑子里第一个画面是？' },
+    q21b: { title: '这个画面让您想起谁、想起什么时候？' },
+    q22:  { title: '如果您是孩子，每天回到这个家，最大的感受会是什么？' },
+    free: { title: '家长自由倾诉(只读不分析)' }
+  };
+
   // ====== Build structured data object (for encryption) ======
   function buildDataObject() {
     const data = {};
     QUESTIONS.forEach(q => {
       const v = getValue(q);
+      const meta = QUESTION_META[q.id] || {};
+      const entry = { title: meta.title || q.key };
+      if (meta.scale) entry.scale = meta.scale;
       if (q.type === 'multi') {
-        data[q.id] = v;
+        entry.value = v;
       } else {
-        data[q.id] = v;
+        entry.value = v;
       }
+      data[q.id] = entry;
     });
     return data;
   }
@@ -1712,7 +1751,7 @@
 
     // ============ ENCRYPTED (Base64-encoded JSON) ============
     const dataObj = {
-      v: 1,                  // schema version
+      v: 2,                  // schema version (v2: answers include title/scale/value)
       ts: ts,                // timestamp
       role: roleVal,         // role (kept in plaintext header for AI tone hint)
       tone: toneHint,        // tone suggestion
@@ -1725,7 +1764,7 @@
 
     let encrypted = '';
     encrypted += '═══════════════════════════════════════\n';
-    encrypted += '  🔒 家的镜子 · 加密问卷数据 v1\n';
+    encrypted += '  🔒 家的镜子 · 加密问卷数据 v2\n';
     encrypted += '  填写时间:' + ts + '\n';
     encrypted += '  填写人:' + roleVal + '\n';
     if (crisisFlag) encrypted += '  ⚠ 优先级:HIGH\n';
